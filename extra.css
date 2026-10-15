@@ -1,0 +1,30 @@
+/* Lisnoti is self-hosted. Its @font-face rules are in
+   pkgdown/assets/fonts/Lisnoti-woff2/lisnoti.css, which pkgdown copies to the
+   site root. That folder is Lisnoti's own release copied unchanged, one WOFF2
+   file per subset per style, and a page fetches only the subsets its text
+   uses. The @import must stay the first rule in this file, or browsers ignore
+   it. _pkgdown.yml preloads Lisnoti-Regular-latin.woff2, which every page
+   needs. To take a new release, copy its Lisnoti-woff2 folder over this one. */
+@import url("fonts/Lisnoti-woff2/lisnoti.css");
+
+/* Style code */
+code {
+  font-size: 1em;
+}
+
+/* Style right hand aside titles */
+aside h2, aside .h2 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  margin-top: 2.5rem;
+  color: rgba(var(--bs-body-color-rgb), 0.65);
+}
+
+footer {
+  font-size: 0.825em;
+}
+
+/* Remove bottom margin from last paragraph inside Bootstrap alert boxes */
+.alert *:last-child {
+  margin-bottom: 0;
+}

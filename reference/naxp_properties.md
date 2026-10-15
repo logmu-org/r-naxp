@@ -1,0 +1,66 @@
+# Properties of a naxp
+
+The pattern a naxp was parsed from, its largest encoded value, the
+length of its longest canonical form, and the naxp an encoded vector
+carries.
+
+## Usage
+
+``` r
+naxp_pattern(naxp)
+
+naxp_max_encoded_value(naxp)
+
+naxp_max_length(naxp)
+
+naxp_of(x)
+```
+
+## Arguments
+
+- naxp:
+
+  A naxp from
+  [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), or
+  a pattern string.
+
+- x:
+
+  A [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
+  vector.
+
+## Value
+
+- `naxp_pattern()`: a single string.
+
+- `naxp_max_encoded_value()`: a single integer or double.
+
+- `naxp_max_length()`: a single integer.
+
+- `naxp_of()`: a naxp.
+
+## Details
+
+Encoded values run from 1 to the maximum with no gaps, so the maximum is
+also the number of distinct encoded values. It is an integer where it is
+at most 2^31 - 1 and a double where it is at most 2^53. Above 2^53,
+which is the largest whole number R holds exactly,
+`naxp_max_encoded_value()` raises an error, although printing the naxp
+still shows the maximum.
+
+## Examples
+
+``` r
+nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+naxp_pattern(nl_postcode)
+#> [1] "\\9\\9\\9\\9 \\s!! \\A\\A"
+naxp_max_encoded_value(nl_postcode)
+#> [1] 6760000
+naxp_max_length(nl_postcode)
+#> [1] 7
+
+codes <- naxp_encode(c("1012AB", "9999 ZZ"), nl_postcode)
+naxp_of(codes)
+#> <naxp> \9\9\9\9 \s!! \A\A
+#> Maximum encoded value: 6760000
+```
