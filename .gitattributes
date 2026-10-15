@@ -1,0 +1,7 @@
+src/Makevars* text eol=lf
+
+# The vendored naxp library must stay byte for byte as released, so that it
+# still matches the release's SHA256SUMS after a checkout with core.autocrlf.
+src/naxp.cpp -text
+src/naxp.h -text
+src/naxp_cpp.h -text

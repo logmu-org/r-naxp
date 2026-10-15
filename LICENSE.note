@@ -1,0 +1,19 @@
+The naxp package as a whole is distributed under the Apache License, Version 2.0
+(see LICENSE.md).
+
+It includes the naxp C++ library, version 0.13.0, as the three amalgamated files
+from the tagged release at https://github.com/naxp-org/naxp, with their contents
+unchanged:
+
+  src/naxp.cpp     released as naxp.cpp
+  src/naxp.h       released as naxp.h
+  src/naxp_cpp.h   released as naxp.hpp
+
+naxp.hpp is renamed because R CMD check accepts only .h headers at the top of
+src/. Nothing includes it by name, and it still matches the naxp.hpp line in the
+release's SHA256SUMS.
+
+That library is also distributed under the Apache License, Version 2.0:
+
+  Copyright 2026 Tim Gordon
+  Licensed under the Apache License, Version 2.0.

@@ -1,0 +1,18 @@
+.Rproj.user
+.Rhistory
+.RData
+.httr-oauth
+.DS_Store
+.quarto
+docs
+.positai
+inst/doc
+.vscode
+*.stackdump
+
+# Source packages from `R CMD build` / Build Source Package.
+*.tar.gz
+
+# Debris from deliberately failed test runs.
+tests/testthat/_problems/
+tests/testthat/testthat-problems.rds

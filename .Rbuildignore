@@ -1,0 +1,21 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+^LICENSE\.md$
+^cran-comments\.md$
+^data-raw$
+^pkgdown$
+^_pkgdown\.yml$
+^\.github$
+^docs$
+^\.positai$
+^\.claude$
+^\.Rhistory$
+^CRAN-SUBMISSION$
+# Compiled objects. devtools and roxygen compile in place under src/ with
+# -UNDEBUG -O0, and without these rules the stale objects ship in the source
+# package. The vendored library has an assert, so CRAN would then see abort().
+\.o$
+\.so$
+\.dll$
+\.dylib$

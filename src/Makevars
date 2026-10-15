@@ -1,0 +1,3 @@
+# The vendored naxp library is C++17. R uses C++17 by default from 4.3, but
+# 4.1 and 4.2 default to C++14, so the standard is named here.
+CXX_STD = CXX17

@@ -1,0 +1,87 @@
+# AddressSanitizer and UndefinedBehaviorSanitizer, reproducing CRAN's
+# "additional issues" checks in CI, on the R-hub v2 containers:
+#   ghcr.io/r-hub/containers/clang-asan
+#   ghcr.io/r-hub/containers/clang-ubsan
+# datey 0.1.1 was a CRAN patch for a UBSan finding made after acceptance, so
+# this is worth running before each submission.
+#
+# Manual only: Actions tab -> "sanitizers" -> "Run workflow". Ordinary commit CI
+# is R-CMD-check.yaml. The job fails if ASan or UBSan reports anything.
+
+name: sanitizers
+
+on:
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  sanitize:
+    runs-on: ubuntu-latest
+    name: ${{ matrix.image }}
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [clang-asan, clang-ubsan]
+    container:
+      image: ghcr.io/r-hub/containers/${{ matrix.image }}
+    env:
+      UBSAN_OPTIONS: print_stacktrace=1
+      # R leaks by design at exit, so leak detection would only cry wolf.
+      ASAN_OPTIONS: print_stacktrace=1:detect_leaks=0:abort_on_error=0
+      # Vignettes are skipped, so missing Suggests must not become an error.
+      _R_CHECK_FORCE_SUGGESTS_: false
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build/test dependencies
+        # pak ships in the R-hub containers and fetches from the container's own
+        # binary repository, built for this R and libc++. It errors on failure.
+        run: R -q -e 'pak::pkg_install(c("cpp11", "testthat"))'
+
+      - name: Build source tarball
+        run: R CMD build . --no-build-vignettes
+
+      - name: Check under sanitizer
+        run: R CMD check --no-manual --ignore-vignettes naxp_*.tar.gz
+
+      - name: Show R CMD check logs on failure
+        if: failure()
+        run: |
+          for f in naxp.Rcheck/00install.out naxp.Rcheck/00check.log \
+                   naxp.Rcheck/tests/testthat.Rout naxp.Rcheck/tests/testthat.Rout.fail; do
+            echo "===================== $f ====================="
+            cat "$f" 2>/dev/null || echo "(not present)"
+          done
+
+      - name: Fail if a sanitizer reported anything
+        run: |
+          found=0
+          if grep -RIn "ERROR: AddressSanitizer" naxp.Rcheck/ ; then
+            echo "::error::AddressSanitizer reported a memory error (see above)."
+            found=1
+          fi
+          if grep -RIn "runtime error:" naxp.Rcheck/ ; then
+            echo "::error::UndefinedBehaviorSanitizer reported undefined behaviour (see above)."
+            found=1
+          fi
+          if [ "$found" -eq 1 ]; then exit 1; fi
+          echo "CLEAN: no sanitizer diagnostics found."
+
+      # The logs, not the check directory. logmu-org shares one Actions storage
+      # allowance, and uploading the whole .Rcheck folder (installed package
+      # and compiled library included) took it to 90% on 2026-09-11. Every
+      # sanitizer diagnostic lands in one of these text files.
+      - name: Upload check logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: naxp.Rcheck-${{ matrix.image }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: |
+            naxp.Rcheck/00check.log
+            naxp.Rcheck/00install.out
+            naxp.Rcheck/naxp-Ex.Rout*
+            naxp.Rcheck/tests/**/*.Rout*
+            naxp.Rcheck/tests/**/*.log

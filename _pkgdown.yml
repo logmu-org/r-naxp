@@ -1,0 +1,50 @@
+url: https://r-naxp.logmu.org/
+authors:
+  Tim Gordon:
+    href: https://timgord.com
+template:
+  bootstrap: 5
+  light-switch: yes
+  bslib:
+    base_font: Lisnoti
+    primary: '#7E57C2'
+    secondary: '#FF5722'
+    # Tints of the naxp brand pink, #F0A, at datey's lightness levels.
+    navbar-light-bg: hsl(320, 100%, 96%)
+    navbar-dark-bg: hsl(320, 100%, 18%)
+  includes:
+    # Every page sets Latin text in Lisnoti Regular, so fetch it alongside the
+    # stylesheets. pkgdown inserts this verbatim, so the path is from the root.
+    in_header: |
+      <link rel="preload" href="/fonts/Lisnoti-woff2/Lisnoti-Regular-latin.woff2" as="font" type="font/woff2" crossorigin>
+footer:
+  structure:
+    left: [developed_by, typeset_in]
+    right: built_with
+  components:
+    typeset_in: '<br>Typeset in <a href="https://lisnoti.com/">Lisnoti</a>.'
+navbar:
+  type: default
+  left:
+  - icon: fa-home
+    href: index.html
+    aria-label: Home
+  - text: R index
+    href: reference/index.html
+reference:
+- title: Package overview
+  contents:
+  - naxp-package
+- title: Parse a naxp
+  contents:
+  - naxp_parse
+  - naxp_properties
+- title: Encode and decode text
+  contents:
+  - naxp_encode
+  - naxp_accepts
+  - naxp_encoded
+- title: Compare and emit naxps
+  contents:
+  - naxp_compare
+  - naxp_emit
