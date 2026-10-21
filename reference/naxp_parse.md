@@ -27,7 +27,9 @@ saved with [`saveRDS()`](https://rdrr.io/r/base/readRDS.html) or sent to
 a parallel worker is compiled again when first used.
 
 Every function that takes a naxp also accepts a pattern string, which it
-parses in the same way.
+parses in the same way, or a
+[naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
+vector, whose naxp it uses.
 
 ## Errors
 

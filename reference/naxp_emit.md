@@ -2,8 +2,8 @@
 
 Writes a naxp as source code in another language: a fragment of
 declarations that answer the same questions this package does, for that
-one naxp, calling into nothing. The header comment, includes, namespace
-or wrapping class around it are yours to add.
+one naxp, with no dependency on any naxp library. The header comment,
+includes, namespace or wrapping class around it are yours to add.
 
 ## Usage
 
@@ -25,8 +25,10 @@ naxp_emit(
 - naxp:
 
   A naxp from
-  [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), or
-  a pattern string.
+  [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), a
+  pattern string or a
+  [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
+  vector, whose naxp is used.
 
 - language:
 

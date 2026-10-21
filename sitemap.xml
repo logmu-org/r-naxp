@@ -1,8 +1,11 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://r-naxp.logmu.org/404.html</loc></url>
 <url><loc>https://r-naxp.logmu.org/LICENSE.html</loc></url>
+<url><loc>https://r-naxp.logmu.org/articles/index.html</loc></url>
+<url><loc>https://r-naxp.logmu.org/articles/naxp.html</loc></url>
 <url><loc>https://r-naxp.logmu.org/authors.html</loc></url>
 <url><loc>https://r-naxp.logmu.org/index.html</loc></url>
+<url><loc>https://r-naxp.logmu.org/news/index.html</loc></url>
 <url><loc>https://r-naxp.logmu.org/reference/index.html</loc></url>
 <url><loc>https://r-naxp.logmu.org/reference/naxp-package.html</loc></url>
 <url><loc>https://r-naxp.logmu.org/reference/naxp_accepts.html</loc></url>
@@ -12,5 +15,6 @@
 <url><loc>https://r-naxp.logmu.org/reference/naxp_encoded.html</loc></url>
 <url><loc>https://r-naxp.logmu.org/reference/naxp_parse.html</loc></url>
 <url><loc>https://r-naxp.logmu.org/reference/naxp_properties.html</loc></url>
+<url><loc>https://r-naxp.logmu.org/reference/naxp_standard.html</loc></url>
 </urlset>
 

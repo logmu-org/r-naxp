@@ -22,8 +22,8 @@ naxp_encoded(values, naxp)
 - naxp:
 
   A naxp from
-  [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), or
-  a pattern string.
+  [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), a
+  pattern string or a naxp_encoded vector, whose naxp is used.
 
 ## Value
 
@@ -46,15 +46,18 @@ values.
 
 Subsetting, [`rep()`](https://rdrr.io/r/base/rep.html),
 [`rev()`](https://rdrr.io/r/base/rev.html),
-[`unique()`](https://rdrr.io/r/base/unique.html),
-[`sort()`](https://rdrr.io/r/base/sort.html),
-[`order()`](https://rdrr.io/r/base/order.html),
-[`table()`](https://rdrr.io/r/base/table.html),
-[`split()`](https://rdrr.io/r/base/split.html) and use as a data frame
-column all keep the naxp. Assigning into one accepts a `naxp_encoded`
-vector with the same naxp, or text, which is encoded.
-[`c()`](https://rdrr.io/r/base/c.html) combines `naxp_encoded` vectors
-with the same naxp.
+[`unique()`](https://rdrr.io/r/base/unique.html) and
+[`sort()`](https://rdrr.io/r/base/sort.html) return `naxp_encoded`
+vectors with the same naxp, and
+[`split()`](https://rdrr.io/r/base/split.html) returns a list of them. A
+`naxp_encoded` vector can be a data frame column.
+[`order()`](https://rdrr.io/r/base/order.html) and
+[`match()`](https://rdrr.io/r/base/match.html) return integer indices,
+and [`table()`](https://rdrr.io/r/base/table.html) counts each distinct
+value, labelled with its text, excluding 0. Assigning into a
+`naxp_encoded` vector accepts another with the same naxp, or text, which
+is encoded. [`c()`](https://rdrr.io/r/base/c.html) combines
+`naxp_encoded` vectors with the same naxp.
 
 Encoded values are compared only for equality. `==` and `!=` compare a
 `naxp_encoded` vector with one with the same naxp, with text, which is

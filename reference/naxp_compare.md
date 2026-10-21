@@ -18,8 +18,10 @@ naxp_first_divergent_value(a, b)
 - a:
 
   The naxp the data was encoded with: a naxp from
-  [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), or
-  a pattern string.
+  [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), a
+  pattern string or a
+  [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
+  vector, whose naxp is used.
 
 - b:
 
@@ -33,7 +35,7 @@ naxp_first_divergent_value(a, b)
 ## Value
 
 - `naxp_compare()`: a named character vector with elements
-  `accepted_text`, `encoding` and `printed_text`.
+  `accepted_text`, `encoding` and `canonical_forms`.
 
 - `naxp_first_divergent_value()`: a single encoded value, or 0 where
   every value both naxps hold decodes alike. Values only one naxp holds
@@ -52,8 +54,8 @@ view:
   those `b` defines. Replacing `a` with `b` is safe for stored values
   exactly when this is `"equal"` or `"subset_of"`.
 
-- `printed_text`: how the canonical forms `a` prints stand to those `b`
-  prints.
+- `canonical_forms`: how the canonical forms `a` prints stand to those
+  `b` prints.
 
 Each is `"equal"`, `"subset_of"`, `"superset_of"` or `"incomparable"`.
 
@@ -69,8 +71,8 @@ with_space <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 without_space <- naxp_parse(r"(\9\9\9\9 \s!? \A\A)")
 
 naxp_compare(with_space, without_space)
-#>  accepted_text       encoding   printed_text 
-#>        "equal"        "equal" "incomparable" 
+#>   accepted_text        encoding canonical_forms 
+#>         "equal"         "equal"  "incomparable" 
 naxp_first_divergent_value(with_space, without_space)
 #> [1] 1
 ```

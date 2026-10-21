@@ -1,10 +1,10 @@
 # Package index
 
-## Package overview
+## Standard naxps
 
-- [`naxp`](https://r-naxp.logmu.org/reference/naxp-package.md)
-  [`naxp-package`](https://r-naxp.logmu.org/reference/naxp-package.md) :
-  naxp: Encoded ASCII Expressions for Structured Text Codes
+- [`naxp_standard()`](https://r-naxp.logmu.org/reference/naxp_standard.md)
+  [`naxp_standards()`](https://r-naxp.logmu.org/reference/naxp_standard.md)
+  : Standard naxps
 
 ## Parse a naxp
 
@@ -13,8 +13,7 @@
 - [`naxp_pattern()`](https://r-naxp.logmu.org/reference/naxp_properties.md)
   [`naxp_max_encoded_value()`](https://r-naxp.logmu.org/reference/naxp_properties.md)
   [`naxp_max_length()`](https://r-naxp.logmu.org/reference/naxp_properties.md)
-  [`naxp_of()`](https://r-naxp.logmu.org/reference/naxp_properties.md) :
-  Properties of a naxp
+  : Properties of a naxp
 
 ## Encode and decode text
 
@@ -24,6 +23,9 @@
 - [`naxp_accepts()`](https://r-naxp.logmu.org/reference/naxp_accepts.md)
   [`naxp_canonical_form()`](https://r-naxp.logmu.org/reference/naxp_accepts.md)
   : Check text against a naxp
+
+## Encoded vectors
+
 - [`naxp_encoded()`](https://r-naxp.logmu.org/reference/naxp_encoded.md)
   : Encoded values
 

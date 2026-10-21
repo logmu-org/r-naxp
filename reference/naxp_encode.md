@@ -20,9 +20,11 @@ naxp_decode(x, naxp = NULL)
 - naxp:
 
   A naxp from
-  [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), or
-  a pattern string. For `naxp_decode()`, it is needed only where `x` is
-  not a
+  [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), a
+  pattern string or a
+  [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
+  vector, whose naxp is used. For `naxp_decode()`, it is needed only
+  where `x` is not a
   [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
   vector.
 

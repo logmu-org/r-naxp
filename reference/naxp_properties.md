@@ -1,8 +1,7 @@
 # Properties of a naxp
 
-The pattern a naxp was parsed from, its largest encoded value, the
-length of its longest canonical form, and the naxp an encoded vector
-carries.
+The pattern a naxp was parsed from, its largest encoded value and the
+length of its longest canonical form.
 
 ## Usage
 
@@ -12,8 +11,6 @@ naxp_pattern(naxp)
 naxp_max_encoded_value(naxp)
 
 naxp_max_length(naxp)
-
-naxp_of(x)
 ```
 
 ## Arguments
@@ -21,13 +18,10 @@ naxp_of(x)
 - naxp:
 
   A naxp from
-  [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), or
-  a pattern string.
-
-- x:
-
-  A [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
-  vector.
+  [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), a
+  pattern string or a
+  [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
+  vector, whose naxp is used.
 
 ## Value
 
@@ -36,8 +30,6 @@ naxp_of(x)
 - `naxp_max_encoded_value()`: a single integer or double.
 
 - `naxp_max_length()`: a single integer.
-
-- `naxp_of()`: a naxp.
 
 ## Details
 
@@ -59,8 +51,8 @@ naxp_max_encoded_value(nl_postcode)
 naxp_max_length(nl_postcode)
 #> [1] 7
 
+# An encoded vector stands for the naxp that encoded it
 codes <- naxp_encode(c("1012AB", "9999 ZZ"), nl_postcode)
-naxp_of(codes)
-#> <naxp> \9\9\9\9 \s!! \A\A
-#> Maximum encoded value: 6760000
+naxp_pattern(codes)
+#> [1] "\\9\\9\\9\\9 \\s!! \\A\\A"
 ```
