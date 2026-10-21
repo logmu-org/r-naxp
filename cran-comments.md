@@ -23,7 +23,7 @@ and back again, as specified at <https://naxp.org/spec/>.
 
 - This is a new submission.
 
-'naxp' and 'naxps' may be reported as possibly misspelt words in
+The same note reports 'naxp' and 'naxps' as possibly misspelt words in
 DESCRIPTION. A naxp ('encoded ASCII expression') is the name of the pattern
 the standard defines, so the word is correct, and it is lower case by design.
 
