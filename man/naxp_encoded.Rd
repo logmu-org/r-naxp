@@ -10,7 +10,8 @@ naxp_encoded(values, naxp)
 \item{values}{An integer or double vector of whole numbers from 0 to the
 naxp's maximum encoded value. \code{NA} is an error.}
 
-\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, or a pattern string.}
+\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a \link{naxp_encoded}
+vector, whose naxp is used.}
 }
 \value{
 A \code{naxp_encoded} vector the same length as \code{values}, with its
@@ -31,10 +32,13 @@ A \code{naxp_encoded} vector prints as the text it decodes to, with 0 shown as
 \verb{<invalid (0)>}. \code{\link[=as.character]{as.character()}} gives the text, with \code{NA} for 0, and
 \code{\link[=as.integer]{as.integer()}} or \code{\link[=as.numeric]{as.numeric()}} give the bare values.
 
-Subsetting, \code{\link[=rep]{rep()}}, \code{\link[=rev]{rev()}}, \code{\link[=unique]{unique()}}, \code{\link[=sort]{sort()}}, \code{\link[=order]{order()}}, \code{\link[=table]{table()}},
-\code{\link[=split]{split()}} and use as a data frame column all keep the naxp. Assigning into
-one accepts a \code{naxp_encoded} vector with the same naxp, or text, which is
-encoded. \code{\link[=c]{c()}} combines \code{naxp_encoded} vectors with the same naxp.
+Subsetting, \code{\link[=rep]{rep()}}, \code{\link[=rev]{rev()}}, \code{\link[=unique]{unique()}} and \code{\link[=sort]{sort()}} return \code{naxp_encoded}
+vectors with the same naxp, and \code{\link[=split]{split()}} returns a list of them. A
+\code{naxp_encoded} vector can be a data frame column. \code{\link[=order]{order()}} and \code{\link[=match]{match()}}
+return integer indices, and \code{\link[=table]{table()}} counts each distinct value, labelled
+with its text, excluding 0. Assigning into a \code{naxp_encoded} vector accepts
+another with the same naxp, or text, which is encoded. \code{\link[=c]{c()}} combines
+\code{naxp_encoded} vectors with the same naxp.
 
 Encoded values are compared only for equality. \code{==} and \code{!=} compare a
 \code{naxp_encoded} vector with one with the same naxp, with text, which is

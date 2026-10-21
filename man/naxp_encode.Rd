@@ -12,9 +12,9 @@ naxp_decode(x, naxp = NULL)
 \arguments{
 \item{text}{A character vector.}
 
-\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, or a pattern string. For
-\code{naxp_decode()}, it is needed only where \code{x} is not a \link{naxp_encoded}
-vector.}
+\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a \link{naxp_encoded}
+vector, whose naxp is used. For \code{naxp_decode()}, it is needed only where
+\code{x} is not a \link{naxp_encoded} vector.}
 
 \item{x}{A \link{naxp_encoded} vector, or an integer or double vector of encoded
 values. Bare values must be whole numbers from 0 to the naxp's maximum

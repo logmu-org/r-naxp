@@ -237,6 +237,56 @@ cpp11::list cpp_naxp_parse(cpp11::strings pattern)
 	});
 }
 
+// The pattern of a standard naxp, looked up by the library so that ids and variants match as
+// in every naxp library, or NA where there is no such standard or variant.
+[[cpp11::register]]
+cpp11::strings cpp_naxp_standard_pattern(cpp11::strings id, cpp11::strings variant)
+{
+	std::optional<logmu::naxp> expression = logmu::naxp::try_standard_naxp(text_of(id[0]), text_of(variant[0]));
+	cpp11::writable::strings result(1);
+	if (expression)
+	{
+		const std::string_view pattern = expression->pattern();
+		SET_STRING_ELT(result, 0, make_string(pattern.data(), pattern.size()));
+	}
+	else
+	{
+		SET_STRING_ELT(result, 0, NA_STRING);
+	}
+	return result;
+}
+
+// Every standard naxp, one element per variant, as the columns of a data frame.
+[[cpp11::register]]
+cpp11::list cpp_naxp_all_standard_naxps()
+{
+	using namespace cpp11::literals;
+
+	const std::vector<logmu::standard_naxp_variant>& variants = logmu::naxp::all_standard_naxps();
+	const R_xlen_t count = static_cast<R_xlen_t>(variants.size());
+	cpp11::writable::strings ids(count);
+	cpp11::writable::strings names(count);
+	cpp11::writable::strings variant_ids(count);
+	cpp11::writable::strings patterns(count);
+	cpp11::writable::strings notes(count);
+	for (R_xlen_t index = 0; index < count; ++index)
+	{
+		const logmu::standard_naxp_variant& variant = variants[static_cast<std::size_t>(index)];
+		SET_STRING_ELT(ids, index, make_string(variant.id.data(), variant.id.size()));
+		SET_STRING_ELT(names, index, make_string(variant.name.data(), variant.name.size()));
+		SET_STRING_ELT(variant_ids, index, make_string(variant.variant.data(), variant.variant.size()));
+		SET_STRING_ELT(patterns, index, make_string(variant.pattern.data(), variant.pattern.size()));
+		SET_STRING_ELT(notes, index, make_string(variant.notes.data(), variant.notes.size()));
+	}
+	return cpp11::writable::list({
+		"id"_nm = static_cast<SEXP>(ids),
+		"name"_nm = static_cast<SEXP>(names),
+		"variant"_nm = static_cast<SEXP>(variant_ids),
+		"pattern"_nm = static_cast<SEXP>(patterns),
+		"notes"_nm = static_cast<SEXP>(notes),
+	});
+}
+
 // 0 where encoded values fit an R integer, 1 where they fit a double exactly, 2 where they
 // are too large for R.
 [[cpp11::register]]
@@ -367,9 +417,9 @@ cpp11::sexp cpp_naxp_compare(SEXP a, SEXP b, int budget)
 	cpp11::writable::strings result({
 		relationship_name(comparison.accepted_text),
 		relationship_name(comparison.encoding),
-		relationship_name(comparison.printed_text),
+		relationship_name(comparison.canonical_forms),
 	});
-	result.names() = {"accepted_text", "encoding", "printed_text"};
+	result.names() = {"accepted_text", "encoding", "canonical_forms"};
 	return result;
 }
 

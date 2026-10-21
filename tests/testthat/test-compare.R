@@ -4,8 +4,8 @@
 #
 # Copyright (c) Tim Gordon
 
-relationships <- function(accepted_text, encoding, printed_text) {
-  c(accepted_text = accepted_text, encoding = encoding, printed_text = printed_text)
+relationships <- function(accepted_text, encoding, canonical_forms) {
+  c(accepted_text = accepted_text, encoding = encoding, canonical_forms = canonical_forms)
 }
 
 test_that("naxp_compare() gives the three relationships from a's point of view", {

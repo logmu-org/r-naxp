@@ -20,6 +20,20 @@ extern "C" SEXP _naxp_cpp_naxp_parse(SEXP pattern) {
   END_CPP11
 }
 // naxp_binding.cpp
+cpp11::strings cpp_naxp_standard_pattern(cpp11::strings id, cpp11::strings variant);
+extern "C" SEXP _naxp_cpp_naxp_standard_pattern(SEXP id, SEXP variant) {
+  BEGIN_CPP11
+    return cpp11::as_sexp(cpp_naxp_standard_pattern(cpp11::as_cpp<cpp11::decay_t<cpp11::strings>>(id), cpp11::as_cpp<cpp11::decay_t<cpp11::strings>>(variant)));
+  END_CPP11
+}
+// naxp_binding.cpp
+cpp11::list cpp_naxp_all_standard_naxps();
+extern "C" SEXP _naxp_cpp_naxp_all_standard_naxps() {
+  BEGIN_CPP11
+    return cpp11::as_sexp(cpp_naxp_all_standard_naxps());
+  END_CPP11
+}
+// naxp_binding.cpp
 int cpp_naxp_storage(SEXP pointer);
 extern "C" SEXP _naxp_cpp_naxp_storage(SEXP pointer) {
   BEGIN_CPP11
@@ -114,6 +128,7 @@ extern "C" SEXP _naxp_cpp_naxp_emit(SEXP pointer, SEXP language, SEXP prefix, SE
 extern "C" {
 static const R_CallMethodDef CallEntries[] = {
     {"_naxp_cpp_naxp_accepts",                (DL_FUNC) &_naxp_cpp_naxp_accepts,                2},
+    {"_naxp_cpp_naxp_all_standard_naxps",     (DL_FUNC) &_naxp_cpp_naxp_all_standard_naxps,     0},
     {"_naxp_cpp_naxp_canonical_form",         (DL_FUNC) &_naxp_cpp_naxp_canonical_form,         2},
     {"_naxp_cpp_naxp_check_values",           (DL_FUNC) &_naxp_cpp_naxp_check_values,           3},
     {"_naxp_cpp_naxp_compare",                (DL_FUNC) &_naxp_cpp_naxp_compare,                3},
@@ -126,6 +141,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_naxp_cpp_naxp_max_encoded_value_text", (DL_FUNC) &_naxp_cpp_naxp_max_encoded_value_text, 1},
     {"_naxp_cpp_naxp_max_length",             (DL_FUNC) &_naxp_cpp_naxp_max_length,             1},
     {"_naxp_cpp_naxp_parse",                  (DL_FUNC) &_naxp_cpp_naxp_parse,                  1},
+    {"_naxp_cpp_naxp_standard_pattern",       (DL_FUNC) &_naxp_cpp_naxp_standard_pattern,       2},
     {"_naxp_cpp_naxp_storage",                (DL_FUNC) &_naxp_cpp_naxp_storage,                1},
     {"_naxp_cpp_naxp_version",                (DL_FUNC) &_naxp_cpp_naxp_version,                0},
     {NULL, NULL, 0}

@@ -5,7 +5,6 @@
 \alias{naxp_pattern}
 \alias{naxp_max_encoded_value}
 \alias{naxp_max_length}
-\alias{naxp_of}
 \title{Properties of a naxp}
 \usage{
 naxp_pattern(naxp)
@@ -13,25 +12,21 @@ naxp_pattern(naxp)
 naxp_max_encoded_value(naxp)
 
 naxp_max_length(naxp)
-
-naxp_of(x)
 }
 \arguments{
-\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, or a pattern string.}
-
-\item{x}{A \link{naxp_encoded} vector.}
+\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a \link{naxp_encoded}
+vector, whose naxp is used.}
 }
 \value{
 \itemize{
 \item \code{naxp_pattern()}: a single string.
 \item \code{naxp_max_encoded_value()}: a single integer or double.
 \item \code{naxp_max_length()}: a single integer.
-\item \code{naxp_of()}: a naxp.
 }
 }
 \description{
-The pattern a naxp was parsed from, its largest encoded value, the length of
-its longest canonical form, and the naxp an encoded vector carries.
+The pattern a naxp was parsed from, its largest encoded value and the length
+of its longest canonical form.
 }
 \details{
 Encoded values run from 1 to the maximum with no gaps, so the maximum is also
@@ -46,6 +41,7 @@ naxp_pattern(nl_postcode)
 naxp_max_encoded_value(nl_postcode)
 naxp_max_length(nl_postcode)
 
+# An encoded vector stands for the naxp that encoded it
 codes <- naxp_encode(c("1012AB", "9999 ZZ"), nl_postcode)
-naxp_of(codes)
+naxp_pattern(codes)
 }

@@ -19,7 +19,7 @@ naxp_cache <- new.env(parent = emptyenv())
 #' [saveRDS()] or sent to a parallel worker is compiled again when first used.
 #'
 #' Every function that takes a naxp also accepts a pattern string, which it
-#' parses in the same way.
+#' parses in the same way, or a [naxp_encoded] vector, whose naxp it uses.
 #'
 #' @param pattern A single string: the pattern of the naxp.
 #'
@@ -80,8 +80,8 @@ print.naxp <- function(x, ...) {
 
 #' Properties of a naxp
 #'
-#' The pattern a naxp was parsed from, its largest encoded value, the length of
-#' its longest canonical form, and the naxp an encoded vector carries.
+#' The pattern a naxp was parsed from, its largest encoded value and the length
+#' of its longest canonical form.
 #'
 #' Encoded values run from 1 to the maximum with no gaps, so the maximum is also
 #' the number of distinct encoded values. It is an integer where it is at most
@@ -89,14 +89,13 @@ print.naxp <- function(x, ...) {
 #' largest whole number R holds exactly, `naxp_max_encoded_value()` raises an
 #' error, although printing the naxp still shows the maximum.
 #'
-#' @param naxp A naxp from [naxp_parse()], or a pattern string.
-#' @param x A [naxp_encoded] vector.
+#' @param naxp A naxp from [naxp_parse()], a pattern string or a [naxp_encoded]
+#'   vector, whose naxp is used.
 #'
 #' @returns
 #' * `naxp_pattern()`: a single string.
 #' * `naxp_max_encoded_value()`: a single integer or double.
 #' * `naxp_max_length()`: a single integer.
-#' * `naxp_of()`: a naxp.
 #'
 #' @examples
 #' nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
@@ -104,8 +103,9 @@ print.naxp <- function(x, ...) {
 #' naxp_max_encoded_value(nl_postcode)
 #' naxp_max_length(nl_postcode)
 #'
+#' # An encoded vector stands for the naxp that encoded it
 #' codes <- naxp_encode(c("1012AB", "9999 ZZ"), nl_postcode)
-#' naxp_of(codes)
+#' naxp_pattern(codes)
 #' @name naxp_properties
 NULL
 
@@ -132,33 +132,24 @@ naxp_max_length <- function(naxp) {
   cpp_naxp_max_length(pointer_of(as_naxp(naxp, call), call))
 }
 
-#' @rdname naxp_properties
-#' @export
-naxp_of <- function(x) {
-  if (!inherits(x, "naxp_encoded")) {
-    raise("`x` must be a naxp_encoded vector.", sys.call())
-  }
-  attr(x, "naxp")
-}
-
 new_naxp <- function(pattern) {
   structure(pattern, class = "naxp")
 }
 
-# A naxp from either a naxp or a pattern string.
+# A naxp from a naxp, a pattern string or a naxp_encoded vector.
 as_naxp <- function(naxp, call, argument = "naxp") {
   if (inherits(naxp, "naxp")) {
     return(naxp)
   }
   if (inherits(naxp, "naxp_encoded")) {
-    raise(sprintf("`%s` is a naxp_encoded vector. Use naxp_of() for its naxp.", argument), call)
+    return(attr(naxp, "naxp"))
   }
   if (is.character(naxp) && length(naxp) == 1L && !is.na(naxp)) {
     pattern <- as.character(naxp)
     compiled_naxp(pattern, call)
     return(new_naxp(pattern))
   }
-  raise(sprintf("`%s` must be a naxp or a single pattern string.", argument), call)
+  raise(sprintf("`%s` must be a naxp, a single pattern string or a naxp_encoded vector.", argument), call)
 }
 
 same_naxp <- function(a, b) {
@@ -226,17 +217,48 @@ new_naxp_error <- function(parts, pattern, call) {
 #' @export
 conditionMessage.naxp_error <- function(c) {
   lines <- c$summary
-  if (c$length > 0L && !grepl("[^ -~]", c$pattern, useBytes = TRUE)) {
-    lines <- c(
-      lines,
-      paste0("  ", c$pattern),
-      paste0("  ", strrep(" ", c$offset), strrep("^", c$length))
-    )
+  location <- error_location(c$pattern, c$offset, c$length)
+  if (!is.null(location)) {
+    lines <- c(lines, paste0("  ", location))
   }
   lines <- c(lines, paste0("See https://naxp.org/error-codes/#", tolower(c$code)))
   paste(lines, collapse = "\n")
 }
 
+# Where in the pattern an error is, in words, so that it reads the same in any
+# font: the error's text, and the text before it. NULL where that would add
+# nothing, which is where the error covers the whole pattern, or where the
+# pattern is not printable ASCII and so cannot be quoted safely.
+error_location <- function(pattern, offset, length) {
+  size <- nchar(pattern)
+  if (size == 0L || grepl("[^ -~]", pattern, useBytes = TRUE)) {
+    return(NULL)
+  }
+  if (offset == 0L && (length == 0L || length >= size)) {
+    return(NULL)
+  }
+  before <- substr(pattern, 1L, offset)
+  if (nchar(before) > 24L) {
+    before <- paste0("...", substr(before, nchar(before) - 19L, nchar(before)))
+  }
+  if (length == 0L) {
+    if (offset >= size) {
+      return("The error is at the end of the pattern.")
+    }
+    return(sprintf("The error is just after \"%s\".", before))
+  }
+  text <- substr(pattern, offset + 1L, offset + length)
+  if (offset == 0L) {
+    return(sprintf("The error is at \"%s\", at the start of the pattern.", text))
+  }
+  sprintf("The error is at \"%s\", after \"%s\".", text, before)
+}
+
 raise <- function(message, call) {
   stop(simpleError(message, call))
+}
+
+# Errors raised in C++ carry no call, so re-raise them with the R function's.
+with_call <- function(expr, call) {
+  tryCatch(expr, error = function(error) raise(conditionMessage(error), call))
 }

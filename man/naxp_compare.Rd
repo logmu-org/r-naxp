@@ -10,8 +10,8 @@ naxp_compare(a, b, budget = NULL)
 naxp_first_divergent_value(a, b)
 }
 \arguments{
-\item{a}{The naxp the data was encoded with: a naxp from \code{\link[=naxp_parse]{naxp_parse()}}, or
-a pattern string.}
+\item{a}{The naxp the data was encoded with: a naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a
+pattern string or a \link{naxp_encoded} vector, whose naxp is used.}
 
 \item{b}{The naxp proposed to replace it, likewise.}
 
@@ -21,7 +21,7 @@ states, or a positive whole number.}
 \value{
 \itemize{
 \item \code{naxp_compare()}: a named character vector with elements \code{accepted_text},
-\code{encoding} and \code{printed_text}.
+\code{encoding} and \code{canonical_forms}.
 \item \code{naxp_first_divergent_value()}: a single encoded value, or 0 where every
 value both naxps hold decodes alike. Values only one naxp holds do not
 count. It is an integer where both naxps' encoded values are integers, and
@@ -41,7 +41,7 @@ view:
 \item \code{encoding}: how the (text, encoded value) pairs \code{a} defines stand to those
 \code{b} defines. Replacing \code{a} with \code{b} is safe for stored values exactly when
 this is \code{"equal"} or \code{"subset_of"}.
-\item \code{printed_text}: how the canonical forms \code{a} prints stand to those \code{b}
+\item \code{canonical_forms}: how the canonical forms \code{a} prints stand to those \code{b}
 prints.
 }
 

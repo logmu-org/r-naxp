@@ -17,7 +17,7 @@
 #' * `encoding`: how the (text, encoded value) pairs `a` defines stand to those
 #'   `b` defines. Replacing `a` with `b` is safe for stored values exactly when
 #'   this is `"equal"` or `"subset_of"`.
-#' * `printed_text`: how the canonical forms `a` prints stand to those `b`
+#' * `canonical_forms`: how the canonical forms `a` prints stand to those `b`
 #'   prints.
 #'
 #' Each is `"equal"`, `"subset_of"`, `"superset_of"` or `"incomparable"`.
@@ -27,15 +27,15 @@
 #' default, but a pair that does cannot be decided, and `naxp_compare()` then
 #' raises an error rather than guess.
 #'
-#' @param a The naxp the data was encoded with: a naxp from [naxp_parse()], or
-#'   a pattern string.
+#' @param a The naxp the data was encoded with: a naxp from [naxp_parse()], a
+#'   pattern string or a [naxp_encoded] vector, whose naxp is used.
 #' @param b The naxp proposed to replace it, likewise.
 #' @param budget `NULL` for the library's default budget of 200 000 product
 #'   states, or a positive whole number.
 #'
 #' @returns
 #' * `naxp_compare()`: a named character vector with elements `accepted_text`,
-#'   `encoding` and `printed_text`.
+#'   `encoding` and `canonical_forms`.
 #' * `naxp_first_divergent_value()`: a single encoded value, or 0 where every
 #'   value both naxps hold decodes alike. Values only one naxp holds do not
 #'   count. It is an integer where both naxps' encoded values are integers, and
@@ -93,11 +93,12 @@ naxp_first_divergent_value <- function(a, b) {
 #' Emit a naxp as source code
 #'
 #' Writes a naxp as source code in another language: a fragment of declarations
-#' that answer the same questions this package does, for that one naxp,
-#' calling into nothing. The header comment, includes, namespace or wrapping
-#' class around it are yours to add.
+#' that answer the same questions this package does, for that one naxp, with
+#' no dependency on any naxp library. The header comment, includes, namespace
+#' or wrapping class around it are yours to add.
 #'
-#' @param naxp A naxp from [naxp_parse()], or a pattern string.
+#' @param naxp A naxp from [naxp_parse()], a pattern string or a [naxp_encoded]
+#'   vector, whose naxp is used.
 #' @param language The language to emit: `"csharp"`, `"javascript"`, `"c"`
 #'   (C99) or `"cpp"` (C++17).
 #' @param prefix What every generated name starts with, so several naxps can
@@ -140,7 +141,7 @@ naxp_emit <- function(
     int32 = 4L, uint32 = 5L, int64 = 6L, uint64 = 7L
   )
   pointer <- pointer_of(naxp, call)
-  tryCatch(
+  with_call(
     cpp_naxp_emit(
       pointer,
       language_codes[[language]],
@@ -150,6 +151,6 @@ naxp_emit <- function(
       new_line,
       indent
     ),
-    error = function(error) raise(conditionMessage(error), call)
+    call
   )
 }

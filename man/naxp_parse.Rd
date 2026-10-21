@@ -22,7 +22,7 @@ session, so parsing the same pattern again is cheap, and a naxp saved with
 \code{\link[=saveRDS]{saveRDS()}} or sent to a parallel worker is compiled again when first used.
 
 Every function that takes a naxp also accepts a pattern string, which it
-parses in the same way.
+parses in the same way, or a \link{naxp_encoded} vector, whose naxp it uses.
 }
 \section{Errors}{
 

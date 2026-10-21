@@ -8,6 +8,14 @@ cpp_naxp_parse <- function(pattern) {
   .Call(`_naxp_cpp_naxp_parse`, pattern)
 }
 
+cpp_naxp_standard_pattern <- function(id, variant) {
+  .Call(`_naxp_cpp_naxp_standard_pattern`, id, variant)
+}
+
+cpp_naxp_all_standard_naxps <- function() {
+  .Call(`_naxp_cpp_naxp_all_standard_naxps`)
+}
+
 cpp_naxp_storage <- function(pointer) {
   .Call(`_naxp_cpp_naxp_storage`, pointer)
 }

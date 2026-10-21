@@ -16,7 +16,8 @@ naxp_emit(
 )
 }
 \arguments{
-\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, or a pattern string.}
+\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a \link{naxp_encoded}
+vector, whose naxp is used.}
 
 \item{language}{The language to emit: \code{"csharp"}, \code{"javascript"}, \code{"c"}
 (C99) or \code{"cpp"} (C++17).}
@@ -40,9 +41,9 @@ A single string: the fragment.
 }
 \description{
 Writes a naxp as source code in another language: a fragment of declarations
-that answer the same questions this package does, for that one naxp,
-calling into nothing. The header comment, includes, namespace or wrapping
-class around it are yours to add.
+that answer the same questions this package does, for that one naxp, with
+no dependency on any naxp library. The header comment, includes, namespace
+or wrapping class around it are yours to add.
 }
 \examples{
 cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "nl_postcode"))

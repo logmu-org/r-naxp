@@ -1,0 +1,268 @@
+---
+title: "Get started with naxps"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Get started with naxps}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(naxp)
+```
+
+A **naxp** maps text-based codes, e.g. postcodes, to integers and back again.
+
+If you haven't already, please first take the
+[**naxp** quick tour](https://naxp.org/#quick-tour).
+
+## Create a **naxp**
+
+For the purpose of illustration, we'll roll our own Netherlands
+postcode **naxp**[^standard].
+
+[^standard]: In practice, we'd use the [standard Netherlands postcode **naxp**](https://naxp.org/standard/#nl-postcode) instead. This is covered later on this page.
+
+A Netherlands postcode
+is four digits followed by two letters,
+officially with a space between the digits and the two letters,
+although this is often omitted in electronic data.
+
+This **naxp** accepts both forms
+(but treats the version with a space as the canonical version):
+
+```{r}
+NL_postcode_x <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+NL_postcode_x
+```
+
+We've used a raw string, `r"(...)"`, because **naxp**s use backslashes
+(like regexes) and in a normal string every backslash would have to be doubled.
+
+The `!!` syntax means
+
+- the preceding item makes no difference to the encoding whether or not it's present, and
+- *include it* when decoding the encoded value back to text.
+
+This **naxp** maps every postcode that fits the pattern to an integer
+from 1 to 6&#8239;760&#8239;000, with no gaps.
+
+Let's take it for a test drive:
+
+```{r}
+postcodes_as_text <- c("1012 AB", "1012AB", "1012-AB", "not a postcode")
+postcodes <- naxp_encode(postcodes_as_text, NL_postcode_x)
+postcodes
+as.integer(postcodes)
+```
+
+Note that both `1012 AB` and `1012AB` were mapped to the same encoded value.
+
+The invalid text, including `1012-AB`, was mapped to `0`[^invalid-text].
+
+[^invalid-text]: Not `NA`! All **naxp** libraries *always* encode invalid text as `0`.
+
+We can go in the other direction, i.e. decode the encoded value back to text:
+
+```{r}
+naxp_decode(postcodes) # No need for the naxp (NL_postcode_x)
+naxp_decode(684114L, NL_postcode_x) # Decoding raw numbers requires a naxp
+naxp_decode(0L, NL_postcode_x) # 0 means invalid -- it decodes to NA
+```
+
+As promised, decoding gives the form with the space, i.e. `1012 AB`.
+
+Note that the first line above did not need the original **naxp** because
+it is already included in the vector's attributes.
+
+Encoded values that are negative or greater than the maximum raise an error:
+
+```{r, error = TRUE}
+naxp_decode(6760001L, NL_postcode_x)
+```
+
+For convenience, you can check whether text is valid for a **naxp** and convert it to the canonical form *without encoding it* using the following functions:
+
+```{r}
+naxp_accepts(postcodes_as_text, NL_postcode_x)
+naxp_canonical_form(postcodes_as_text, NL_postcode_x)
+```
+
+You can obtain properties of a **naxp**:
+
+```{r}
+writeLines(naxp_pattern(NL_postcode_x)) # Text pattern used to define the naxp
+naxp_max_encoded_value(NL_postcode_x) # Maximum encoded value
+naxp_max_length(NL_postcode_x) # Maximum decoded text length
+```
+
+## Encoded values in data
+
+The `naxp_encode()` function returns a `naxp_encoded` vector
+of encoded values, an S3 class. As noted above, a `naxp_encoded` also includes the **naxp** used to encode the values.
+
+A `naxp_encoded` looks like text when printed, including when it's part of a data frame:
+
+```{r}
+offices <- data.frame(
+  office = c("Amsterdam", "Maastricht", "Head office"),
+  postcode = naxp_encode(c("1012 AB", "6211 CA", "1012AB"), NL_postcode_x)
+)
+offices
+offices[offices$postcode == "1012 AB", ]
+```
+
+Comparing a `naxp_encoded` with text encodes the text before the comparison. This is why, in the above, the encoded values for `"1012AB"` and `"1012 AB"`
+both match `"1012 AB"`.
+
+`sort()` sorts by encoded value.
+
+To turn bare encoded values, e.g. values read back from a database or a file, back into a `naxp_encoded` vector, use `naxp_encoded()`:
+
+```{r}
+naxp_encoded(c(684114, 0), NL_postcode_x)
+```
+
+It checks every value, so an illegal one is an error:
+
+```{r, error = TRUE}
+naxp_encoded(6760001L, NL_postcode_x)
+```
+
+## **naxp** constraints in R
+
+The **naxp** specification permits up to 2<sup>64</sup>&#x2212;1 encoded values
+but R does not have built-in 64-bit integers. Consequently,
+
+- **naxp**s with a maximum encoded value up to 2<sup>31</sup>&#x2212;1
+  are stored as `integer`,
+- **naxp**s with a maximum encoded value up to 2<sup>53</sup>
+  are stored as `double`, otherwise
+- the functions that return or accept encoded values, such as
+  `naxp_encode()` and `naxp_decode()`, raise an error[^compatibility].
+
+[^compatibility]: For compatibility with other **naxp** implementations,
+`naxp_parse()` still parses such a **naxp**, and
+`naxp_accepts()`, `naxp_canonical_form()`, `naxp_compare()`
+and `naxp_emit()` do *not* raise an error,
+but instead work in line with the **naxp** specification.
+
+## Standard **naxp**s
+
+Standard **naxp**s are provided for widely used code systems. The benefits are:
+
+- Safety &ndash; a hand-written pattern can contain mistakes
+  that silently change the encoding, whereas
+  a standard one has been tested and is fixed for all time.
+- Consistent encoding &ndash;
+  all variants of a standard encode consistently,
+  i.e. any text accepted by two variants results in the
+  same encoded value.
+- Commonality &ndash; the standards are the same in all languages in which **naxp**s are implemented.
+
+
+```{r}
+naxp_standards()[, c("id", "variant")]
+```
+
+We could have created our Netherlands postcode **naxp** using
+
+```{r}
+NL_postcode_x2 <- naxp_standard("nl-postcode")
+naxp_compare(NL_postcode_x, NL_postcode_x2)
+```
+
+All three relationships are "equal", which means that our **naxp** and the standard one behave identically.
+
+For detailed information on all available standard **naxp**s, see
+[naxp.org/standard](https://naxp.org/standard/).
+
+## Comparing and migrating **naxp**s
+
+In the above, we used `naxp_compare()` to check that our hand-written
+Netherlands postcode **naxp** was the same as the standard one.
+The definitions were the same so this was trivially true, but
+things are not always so simple.
+
+Let's imagine that we have new incoming postcode data
+that uses hyphen separators,
+e.g. `1012-AB`
+(which is not uncommon in the Netherlands).
+
+The `naxp` package provides a `hyphen-tolerant` variant
+for Netherlands postcodes,
+but is this safe to use without re-encoding the encoded values
+we've already stored?
+
+Let's find out:
+
+```{r}
+NL_postcode_HT_x <- naxp_standard("nl-postcode", "hyphen-tolerant")
+naxp_compare(NL_postcode_x, NL_postcode_HT_x)
+```
+
+This comparison tells us:
+
+- `accepted_text` being `"subset_of"` means
+  the `hyphen-tolerant` **naxp** accepts all text the
+  existing one does, and more.
+- `encoding` being `"subset_of"` means
+  every text accepted by the existing **naxp**
+  has the same encoded value under the
+  `hyphen-tolerant` **naxp**, *but*
+  the `hyphen-tolerant` **naxp** also accepts text
+  that is invalid under the existing **naxp**.
+- `canonical_forms` being `"equal"` means both **naxp**s decode
+  to the same texts.
+
+This means it *is* safe to replace the existing **naxp** with
+the `hyphen-tolerant` **naxp**. Here is the difference in practice:
+
+```{r}
+postcodes_as_text
+
+# Rejects "1012-AB":
+as.integer(naxp_encode(postcodes_as_text, NL_postcode_x))
+
+# Accepts "1012-AB":
+as.integer(naxp_encode(postcodes_as_text, NL_postcode_HT_x))
+```
+
+See [naxp.org/migrate](https://naxp.org/migrate/)
+to play with an interactive version
+(which also helps interpret the results if you are considering
+migrating a **naxp**).
+
+## Errors
+
+An invalid **naxp** pattern raises a `naxp_error`,
+which includes diagnostics about the error and its location.
+
+```{r, error = TRUE}
+naxp_parse(r"(\9\9\9\9 [A-)")
+```
+
+Use `tryCatch()` to obtain more information:
+
+```{r}
+error <- tryCatch(naxp_parse(r"(\9\9\9\9 [A-)"), naxp_error = identity)
+error$code
+error$offset
+```
+
+The `NAXP...` error codes are the same in every **naxp** library.
+
+## Code generation
+
+`naxp_emit()` allows you to generate source code in
+other languages, including C++, C# and JavaScript.
+
+Go to [naxp.org/code-gen](https://naxp.org/code-gen/)
+to see this working in practice.

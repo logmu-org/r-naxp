@@ -19,10 +19,13 @@
 #' `<invalid (0)>`. [as.character()] gives the text, with `NA` for 0, and
 #' [as.integer()] or [as.numeric()] give the bare values.
 #'
-#' Subsetting, [rep()], [rev()], [unique()], [sort()], [order()], [table()],
-#' [split()] and use as a data frame column all keep the naxp. Assigning into
-#' one accepts a `naxp_encoded` vector with the same naxp, or text, which is
-#' encoded. [c()] combines `naxp_encoded` vectors with the same naxp.
+#' Subsetting, [rep()], [rev()], [unique()] and [sort()] return `naxp_encoded`
+#' vectors with the same naxp, and [split()] returns a list of them. A
+#' `naxp_encoded` vector can be a data frame column. [order()] and [match()]
+#' return integer indices, and [table()] counts each distinct value, labelled
+#' with its text, excluding 0. Assigning into a `naxp_encoded` vector accepts
+#' another with the same naxp, or text, which is encoded. [c()] combines
+#' `naxp_encoded` vectors with the same naxp.
 #'
 #' Encoded values are compared only for equality. `==` and `!=` compare a
 #' `naxp_encoded` vector with one with the same naxp, with text, which is
@@ -32,7 +35,8 @@
 #'
 #' @param values An integer or double vector of whole numbers from 0 to the
 #'   naxp's maximum encoded value. `NA` is an error.
-#' @param naxp A naxp from [naxp_parse()], or a pattern string.
+#' @param naxp A naxp from [naxp_parse()], a pattern string or a [naxp_encoded]
+#'   vector, whose naxp is used.
 #'
 #' @returns A `naxp_encoded` vector the same length as `values`, with its
 #'   names.
@@ -58,7 +62,7 @@ naxp_encoded <- function(values, naxp) {
   naxp <- as_naxp(naxp, call)
   pointer <- pointer_of(naxp, call)
   value_storage(pointer, call)
-  checked <- cpp_naxp_check_values(pointer, values, "values")
+  checked <- with_call(cpp_naxp_check_values(pointer, values, "values"), call)
   names(checked) <- names(values)
   new_naxp_encoded(checked, naxp)
 }

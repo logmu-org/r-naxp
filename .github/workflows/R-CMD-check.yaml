@@ -25,9 +25,12 @@ jobs:
           - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
           - {os: ubuntu-latest,   r: 'release'}
           - {os: ubuntu-latest,   r: 'oldrel-1'}
-          # The package's floor. Its compiler is the oldest the vendored C++17
-          # library has to build with, and nothing else here tests it.
+          # The package's floor, R 4.1. On Linux it builds with the runner's
+          # current GCC. On Windows it builds with Rtools40's GCC 8.3, the
+          # oldest compiler the vendored C++17 library has to support, which
+          # nothing else here tests.
           - {os: ubuntu-latest,   r: '4.1'}
+          - {os: windows-latest, r: '4.1'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}

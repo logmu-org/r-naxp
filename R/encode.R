@@ -25,9 +25,9 @@
 #' error.
 #'
 #' @param text A character vector.
-#' @param naxp A naxp from [naxp_parse()], or a pattern string. For
-#'   `naxp_decode()`, it is needed only where `x` is not a [naxp_encoded]
-#'   vector.
+#' @param naxp A naxp from [naxp_parse()], a pattern string or a [naxp_encoded]
+#'   vector, whose naxp is used. For `naxp_decode()`, it is needed only where
+#'   `x` is not a [naxp_encoded] vector.
 #' @param x A [naxp_encoded] vector, or an integer or double vector of encoded
 #'   values. Bare values must be whole numbers from 0 to the naxp's maximum
 #'   encoded value, or `NA`.
@@ -85,7 +85,7 @@ naxp_decode <- function(x, naxp = NULL) {
   }
   pointer <- pointer_of(naxp, call)
   value_storage(pointer, call)
-  text <- cpp_naxp_decode(pointer, values, "x")
+  text <- with_call(cpp_naxp_decode(pointer, values, "x"), call)
   names(text) <- names(x)
   text
 }

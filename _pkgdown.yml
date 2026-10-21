@@ -7,14 +7,31 @@ template:
   light-switch: yes
   bslib:
     base_font: Lisnoti
-    primary: '#7E57C2'
-    secondary: '#FF5722'
-    # Tints of the naxp brand pink, #F0A, at datey's lightness levels.
-    navbar-light-bg: hsl(320, 100%, 96%)
-    navbar-dark-bg: hsl(320, 100%, 18%)
+    # naxp.org's colours, from its naxp.css.
+    # Text is teal.
+    # The brand magenta (#FF00AA) is only ever an outline or a
+    # mark, never a fill, so it stays in the logo but out of Bootstrap's
+    # primary and secondary, which fill buttons and the active menu item.
+    primary: '#00707A'
+    secondary: '#054F57'
+    body-color: '#181818'
+    headings-color: '#054F57'
+    link-color: '#00707A'
+    link-hover-color: '#007D88'
+    border-color: '#D5E4E5'
+    navbar-light-bg: '#E8F4F5'
+    # naxp.org's dark mode.
+    body-bg-dark: '#0A1719'
+    body-color-dark: '#EBEBEB'
+    headings-color-dark: '#64CEC3'
+    link-color-dark: '#4DD5C8'
+    link-hover-color-dark: '#8FE5DC'
+    border-color-dark: '#28474B'
+    navbar-dark-bg: '#162E31'
   includes:
-    # Every page sets Latin text in Lisnoti Regular, so fetch it alongside the
-    # stylesheets. pkgdown inserts this verbatim, so the path is from the root.
+    # Web pages set Latin text in Lisnoti Regular,
+    # so fetch it alongside the stylesheets.
+    # pkgdown inserts this verbatim, so the path is from the root.
     in_header: |
       <link rel="preload" href="/fonts/Lisnoti-woff2/Lisnoti-Regular-latin.woff2" as="font" type="font/woff2" crossorigin>
 footer:
@@ -29,12 +46,20 @@ navbar:
   - icon: fa-home
     href: index.html
     aria-label: Home
+  - text: Get started
+    href: articles/naxp.html
   - text: R index
     href: reference/index.html
+  - text: naxp.org
+    href: https://naxp.org/
+  - text: Specification
+    href: https://naxp.org/spec/
+  - text: Change log
+    href: news/index.html
 reference:
-- title: Package overview
+- title: Standard naxps
   contents:
-  - naxp-package
+  - naxp_standard
 - title: Parse a naxp
   contents:
   - naxp_parse
@@ -43,6 +68,8 @@ reference:
   contents:
   - naxp_encode
   - naxp_accepts
+- title: Encoded vectors
+  contents:
   - naxp_encoded
 - title: Compare and emit naxps
   contents:

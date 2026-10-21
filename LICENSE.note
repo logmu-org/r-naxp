@@ -1,7 +1,7 @@
 The naxp package as a whole is distributed under the Apache License, Version 2.0
 (see LICENSE.md).
 
-It includes the naxp C++ library, version 0.13.0, as the three amalgamated files
+It includes the naxp C++ library, version 0.15.0, as the three amalgamated files
 from the tagged release at https://github.com/naxp-org/naxp, with their contents
 unchanged:
 
@@ -13,7 +13,11 @@ naxp.hpp is renamed because R CMD check accepts only .h headers at the top of
 src/. Nothing includes it by name, and it still matches the naxp.hpp line in the
 release's SHA256SUMS.
 
-That library is also distributed under the Apache License, Version 2.0:
+The tests also include the naxp conformance data, tests/testthat/naxp-v0.10.json,
+taken unchanged from conformance/naxp-v0.10.json in the same tagged release.
+
+That library and its conformance data are also distributed under the Apache
+License, Version 2.0:
 
   Copyright 2026 Tim Gordon
   Licensed under the Apache License, Version 2.0.

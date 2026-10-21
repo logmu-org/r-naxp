@@ -81,6 +81,15 @@ test_that("text must be a character vector, and comes first", {
   expect_error(naxp_canonical_form(1012, nl_space), "character vector")
 })
 
+test_that("errors raised in C++ name the R function", {
+  error <- tryCatch(naxp_decode(-1L, nl_space), error = identity)
+  expect_identical(deparse(conditionCall(error)), "naxp_decode(-1L, nl_space)")
+  error <- tryCatch(naxp_encoded(-1L, nl_space), error = identity)
+  expect_identical(deparse(conditionCall(error)), "naxp_encoded(-1L, nl_space)")
+  error <- tryCatch(naxp_emit(nl_space, "c", value_type = "int8"), error = identity)
+  expect_identical(conditionCall(error)[[1]], as.name("naxp_emit"))
+})
+
 test_that("naxp_decode() checks bare values", {
   expect_error(naxp_decode(c(1, 2.5), nl_space), "x\\[2\\] is 2.5, which is not a whole number")
   expect_error(naxp_decode(-1L, nl_space), "x\\[1\\] is -1, which is negative")

@@ -5,3 +5,4 @@ src/Makevars* text eol=lf
 src/naxp.cpp -text
 src/naxp.h -text
 src/naxp_cpp.h -text
+tests/testthat/naxp-v0.10.json -text
