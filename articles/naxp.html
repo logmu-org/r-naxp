@@ -92,12 +92,12 @@ postcode &lt;strong&gt;naxp&lt;/strong&gt;&lt;/a&gt; instead. This is covered la
 this page.&lt;/p&gt;'><sup>1</sup></a>.</p>
 <p>A Netherlands postcode is four digits followed by two letters,
 officially with a space between the digits and the two letters, although
-this is often omitted in electronic data.</p>
+this is often omitted.</p>
 <p>This <strong>naxp</strong> accepts both forms (but treats the version
 with a space as the canonical version):</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">NL_postcode_x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/naxp_parse.html">naxp_parse</a></span><span class="op">(</span><span class="st">r"(\9\9\9\9 \s!! \A\A)"</span><span class="op">)</span></span>
-<span><span class="va">NL_postcode_x</span></span>
+<code class="sourceCode R"><span><span class="va">postcode_naxp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/naxp_parse.html">naxp_parse</a></span><span class="op">(</span><span class="st">r"(\9\9\9\9 \s!! \A\A)"</span><span class="op">)</span></span>
+<span><span class="va">postcode_naxp</span></span>
 <span><span class="co">#&gt; &lt;naxp&gt; \9\9\9\9 \s!! \A\A</span></span>
 <span><span class="co">#&gt; Maximum encoded value: 6760000</span></span></code></pre></div>
 <p>We’ve used a raw string, <code>r"(...)"</code>, because
@@ -116,7 +116,7 @@ to an integer from 1 to 6 760 000, with no gaps.</p>
 <p>Let’s take it for a test drive:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">postcodes_as_text</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1012 AB"</span>, <span class="st">"1012AB"</span>, <span class="st">"1012-AB"</span>, <span class="st">"not a postcode"</span><span class="op">)</span></span>
-<span><span class="va">postcodes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/naxp_encode.html">naxp_encode</a></span><span class="op">(</span><span class="va">postcodes_as_text</span>, <span class="va">NL_postcode_x</span><span class="op">)</span></span>
+<span><span class="va">postcodes</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/naxp_encode.html">naxp_encode</a></span><span class="op">(</span><span class="va">postcodes_as_text</span>, <span class="va">postcode_naxp</span><span class="op">)</span></span>
 <span><span class="va">postcodes</span></span>
 <span><span class="co">#&gt; &lt;naxp_encoded[4]&gt; \9\9\9\9 \s!! \A\A</span></span>
 <span><span class="co">#&gt; [1] 1012 AB       1012 AB       &lt;invalid (0)&gt; &lt;invalid (0)&gt;</span></span>
@@ -130,11 +130,11 @@ mapped to the same encoded value.</p>
 <p>We can go in the other direction, i.e. decode the encoded value back
 to text:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/naxp_encode.html">naxp_decode</a></span><span class="op">(</span><span class="va">postcodes</span><span class="op">)</span> <span class="co"># No need for the naxp (NL_postcode_x)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/naxp_encode.html">naxp_decode</a></span><span class="op">(</span><span class="va">postcodes</span><span class="op">)</span> <span class="co"># No need for the naxp (postcode_naxp)</span></span>
 <span><span class="co">#&gt; [1] "1012 AB" "1012 AB" NA        NA</span></span>
-<span><span class="fu"><a href="../reference/naxp_encode.html">naxp_decode</a></span><span class="op">(</span><span class="fl">684114L</span>, <span class="va">NL_postcode_x</span><span class="op">)</span> <span class="co"># Decoding raw numbers requires a naxp</span></span>
+<span><span class="fu"><a href="../reference/naxp_encode.html">naxp_decode</a></span><span class="op">(</span><span class="fl">684114L</span>, <span class="va">postcode_naxp</span><span class="op">)</span> <span class="co"># Decoding raw numbers requires a naxp</span></span>
 <span><span class="co">#&gt; [1] "1012 AB"</span></span>
-<span><span class="fu"><a href="../reference/naxp_encode.html">naxp_decode</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="va">NL_postcode_x</span><span class="op">)</span> <span class="co"># 0 means invalid -- it decodes to NA</span></span>
+<span><span class="fu"><a href="../reference/naxp_encode.html">naxp_decode</a></span><span class="op">(</span><span class="fl">0L</span>, <span class="va">postcode_naxp</span><span class="op">)</span> <span class="co"># 0 means invalid -- it decodes to NA</span></span>
 <span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
 <p>As promised, decoding gives the form with the space,
 i.e. <code>1012 AB</code>.</p>
@@ -144,39 +144,40 @@ attributes.</p>
 <p>Encoded values that are negative or greater than the maximum raise an
 error:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/naxp_encode.html">naxp_decode</a></span><span class="op">(</span><span class="fl">6760001L</span>, <span class="va">NL_postcode_x</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/naxp_encode.html">naxp_decode</a></span><span class="op">(</span><span class="fl">6760001L</span>, <span class="va">postcode_naxp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `naxp_decode()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> x[1] is 6760001, above the naxp's maximum encoded value of 6760000.</span></span></code></pre></div>
 <p>For convenience, you can check whether text is valid for a
 <strong>naxp</strong> and convert it to the canonical form <em>without
 encoding it</em> using the following functions:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/naxp_accepts.html">naxp_accepts</a></span><span class="op">(</span><span class="va">postcodes_as_text</span>, <span class="va">NL_postcode_x</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/naxp_accepts.html">naxp_accepts</a></span><span class="op">(</span><span class="va">postcodes_as_text</span>, <span class="va">postcode_naxp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1]  TRUE  TRUE FALSE FALSE</span></span>
-<span><span class="fu"><a href="../reference/naxp_accepts.html">naxp_canonical_form</a></span><span class="op">(</span><span class="va">postcodes_as_text</span>, <span class="va">NL_postcode_x</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/naxp_accepts.html">naxp_canonical_form</a></span><span class="op">(</span><span class="va">postcodes_as_text</span>, <span class="va">postcode_naxp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "1012 AB" "1012 AB" NA        NA</span></span></code></pre></div>
 <p>You can obtain properties of a <strong>naxp</strong>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="fu"><a href="../reference/naxp_properties.html">naxp_pattern</a></span><span class="op">(</span><span class="va">NL_postcode_x</span><span class="op">)</span><span class="op">)</span> <span class="co"># Text pattern used to define the naxp</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/writeLines.html" class="external-link">writeLines</a></span><span class="op">(</span><span class="fu"><a href="../reference/naxp_properties.html">naxp_pattern</a></span><span class="op">(</span><span class="va">postcode_naxp</span><span class="op">)</span><span class="op">)</span> <span class="co"># Text pattern used to define the naxp</span></span>
 <span><span class="co">#&gt; \9\9\9\9 \s!! \A\A</span></span>
-<span><span class="fu"><a href="../reference/naxp_properties.html">naxp_max_encoded_value</a></span><span class="op">(</span><span class="va">NL_postcode_x</span><span class="op">)</span> <span class="co"># Maximum encoded value</span></span>
+<span><span class="fu"><a href="../reference/naxp_properties.html">naxp_max_encoded_value</a></span><span class="op">(</span><span class="va">postcode_naxp</span><span class="op">)</span> <span class="co"># Maximum encoded value</span></span>
 <span><span class="co">#&gt; [1] 6760000</span></span>
-<span><span class="fu"><a href="../reference/naxp_properties.html">naxp_max_length</a></span><span class="op">(</span><span class="va">NL_postcode_x</span><span class="op">)</span> <span class="co"># Maximum decoded text length</span></span>
+<span><span class="fu"><a href="../reference/naxp_properties.html">naxp_max_length</a></span><span class="op">(</span><span class="va">postcode_naxp</span><span class="op">)</span> <span class="co"># Maximum decoded text length</span></span>
 <span><span class="co">#&gt; [1] 7</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="encoded-values-in-data">Encoded values in data<a class="anchor" aria-label="anchor" href="#encoded-values-in-data"></a>
+<h2 id="naxp_encoded">
+<code>naxp_encoded</code><a class="anchor" aria-label="anchor" href="#naxp_encoded"></a>
 </h2>
 <p>The <code><a href="../reference/naxp_encode.html">naxp_encode()</a></code> function returns a
-<code>naxp_encoded</code> vector of encoded values, an S3 class. As
-noted above, a <code>naxp_encoded</code> also includes the
-<strong>naxp</strong> used to encode the values.</p>
+<code>naxp_encoded</code> vector of encoded values, an S3 class, which
+(as noted above) includes the <strong>naxp</strong> used to encode the
+values.</p>
 <p>A <code>naxp_encoded</code> looks like text when printed, including
 when it’s part of a data frame:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">offices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  office <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Amsterdam"</span>, <span class="st">"Maastricht"</span>, <span class="st">"Head office"</span><span class="op">)</span>,</span>
-<span>  postcode <span class="op">=</span> <span class="fu"><a href="../reference/naxp_encode.html">naxp_encode</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1012 AB"</span>, <span class="st">"6211 CA"</span>, <span class="st">"1012AB"</span><span class="op">)</span>, <span class="va">NL_postcode_x</span><span class="op">)</span></span>
+<span>  postcode <span class="op">=</span> <span class="fu"><a href="../reference/naxp_encode.html">naxp_encode</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1012 AB"</span>, <span class="st">"6211 CA"</span>, <span class="st">"1012AB"</span><span class="op">)</span>, <span class="va">postcode_naxp</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">offices</span></span>
 <span><span class="co">#&gt;        office postcode</span></span>
@@ -188,52 +189,28 @@ when it’s part of a data frame:</p>
 <span><span class="co">#&gt; 1   Amsterdam  1012 AB</span></span>
 <span><span class="co">#&gt; 3 Head office  1012 AB</span></span></code></pre></div>
 <p>Comparing a <code>naxp_encoded</code> with text encodes the text
-before the comparison. This is why, in the above, the encoded values for
-<code>"1012AB"</code> and <code>"1012 AB"</code> both match
+<em>before</em> the comparison. This is why, in the above, the encoded
+values for <code>"1012AB"</code> and <code>"1012 AB"</code> both match
 <code>"1012 AB"</code>.</p>
 <p><code><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort()</a></code> sorts by encoded value.</p>
 <p>To turn bare encoded values, e.g. values read back from a database or
 a file, back into a <code>naxp_encoded</code> vector, use
 <code><a href="../reference/naxp_encoded.html">naxp_encoded()</a></code>:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/naxp_encoded.html">naxp_encoded</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">684114</span>, <span class="fl">0</span><span class="op">)</span>, <span class="va">NL_postcode_x</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/naxp_encoded.html">naxp_encoded</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">684114</span>, <span class="fl">0</span><span class="op">)</span>, <span class="va">postcode_naxp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; &lt;naxp_encoded[2]&gt; \9\9\9\9 \s!! \A\A</span></span>
 <span><span class="co">#&gt; [1] 1012 AB       &lt;invalid (0)&gt;</span></span></code></pre></div>
 <p>It checks every value, so an illegal one is an error:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/naxp_encoded.html">naxp_encoded</a></span><span class="op">(</span><span class="fl">6760001L</span>, <span class="va">NL_postcode_x</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/naxp_encoded.html">naxp_encoded</a></span><span class="op">(</span><span class="fl">6760001L</span>, <span class="va">postcode_naxp</span><span class="op">)</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;"> in `naxp_encoded()`:</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BBBB00;">!</span> values[1] is 6760001, above the naxp's maximum encoded value of 6760000.</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="naxp-constraints-in-r">
-<strong>naxp</strong> constraints in R<a class="anchor" aria-label="anchor" href="#naxp-constraints-in-r"></a>
-</h2>
-<p>The <strong>naxp</strong> specification permits up to
-2<sup>64</sup>−1 encoded values but R does not have built-in 64-bit
-integers. Consequently,</p>
-<ul>
-<li>
-<strong>naxp</strong>s with a maximum encoded value up to
-2<sup>31</sup>−1 are stored as <code>integer</code>,</li>
-<li>
-<strong>naxp</strong>s with a maximum encoded value up to
-2<sup>53</sup> are stored as <code>double</code>, otherwise</li>
-<li>the functions that return or accept encoded values, such as
-<code><a href="../reference/naxp_encode.html">naxp_encode()</a></code> and <code><a href="../reference/naxp_encode.html">naxp_decode()</a></code>, raise an
-error<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;For compatibility with other &lt;strong&gt;naxp&lt;/strong&gt;
-implementations, &lt;code&gt;&lt;a href="../reference/naxp_parse.html"&gt;naxp_parse()&lt;/a&gt;&lt;/code&gt; still parses such a
-&lt;strong&gt;naxp&lt;/strong&gt;, and &lt;code&gt;&lt;a href="../reference/naxp_accepts.html"&gt;naxp_accepts()&lt;/a&gt;&lt;/code&gt;,
-&lt;code&gt;&lt;a href="../reference/naxp_accepts.html"&gt;naxp_canonical_form()&lt;/a&gt;&lt;/code&gt;, &lt;code&gt;&lt;a href="../reference/naxp_compare.html"&gt;naxp_compare()&lt;/a&gt;&lt;/code&gt; and
-&lt;code&gt;&lt;a href="../reference/naxp_emit.html"&gt;naxp_emit()&lt;/a&gt;&lt;/code&gt; do &lt;em&gt;not&lt;/em&gt; raise an error, but instead
-work in line with the &lt;strong&gt;naxp&lt;/strong&gt; specification.&lt;/p&gt;'><sup>3</sup></a>.</li>
-</ul>
 </div>
 <div class="section level2">
 <h2 id="standard-naxps">Standard <strong>naxp</strong>s<a class="anchor" aria-label="anchor" href="#standard-naxps"></a>
 </h2>
 <p>Standard <strong>naxp</strong>s are provided for widely used code
-systems. The benefits are:</p>
+systems. Their benefits are:</p>
 <ul>
 <li>Safety – a hand-written pattern can contain mistakes that silently
 change the encoding, whereas a standard one has been tested and is fixed
@@ -260,8 +237,8 @@ encoded value.</li>
 <p>We could have created our Netherlands postcode <strong>naxp</strong>
 using</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">NL_postcode_x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/naxp_standard.html">naxp_standard</a></span><span class="op">(</span><span class="st">"nl-postcode"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/naxp_compare.html">naxp_compare</a></span><span class="op">(</span><span class="va">NL_postcode_x</span>, <span class="va">NL_postcode_x2</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">std_postcode_naxp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/naxp_standard.html">naxp_standard</a></span><span class="op">(</span><span class="st">"nl-postcode"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/naxp_compare.html">naxp_compare</a></span><span class="op">(</span><span class="va">postcode_naxp</span>, <span class="va">std_postcode_naxp</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   accepted_text        encoding canonical_forms </span></span>
 <span><span class="co">#&gt;         "equal"         "equal"         "equal"</span></span></code></pre></div>
 <p>All three relationships are “equal”, which means that our
@@ -284,8 +261,8 @@ variant for Netherlands postcodes, but is this safe to use without
 re-encoding the encoded values we’ve already stored?</p>
 <p>Let’s find out:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">NL_postcode_HT_x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/naxp_standard.html">naxp_standard</a></span><span class="op">(</span><span class="st">"nl-postcode"</span>, <span class="st">"hyphen-tolerant"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/naxp_compare.html">naxp_compare</a></span><span class="op">(</span><span class="va">NL_postcode_x</span>, <span class="va">NL_postcode_HT_x</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">ht_postcode_naxp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/naxp_standard.html">naxp_standard</a></span><span class="op">(</span><span class="st">"nl-postcode"</span>, <span class="st">"hyphen-tolerant"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/naxp_compare.html">naxp_compare</a></span><span class="op">(</span><span class="va">postcode_naxp</span>, <span class="va">ht_postcode_naxp</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   accepted_text        encoding canonical_forms </span></span>
 <span><span class="co">#&gt;     "subset_of"     "subset_of"         "equal"</span></span></code></pre></div>
 <p>This comparison tells us:</p>
@@ -313,11 +290,11 @@ accepts text that is invalid under the existing
 <span><span class="co">#&gt; [1] "1012 AB"        "1012AB"         "1012-AB"        "not a postcode"</span></span>
 <span></span>
 <span><span class="co"># Rejects "1012-AB":</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="../reference/naxp_encode.html">naxp_encode</a></span><span class="op">(</span><span class="va">postcodes_as_text</span>, <span class="va">NL_postcode_x</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="../reference/naxp_encode.html">naxp_encode</a></span><span class="op">(</span><span class="va">postcodes_as_text</span>, <span class="va">postcode_naxp</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 684114 684114      0      0</span></span>
 <span></span>
 <span><span class="co"># Accepts "1012-AB":</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="../reference/naxp_encode.html">naxp_encode</a></span><span class="op">(</span><span class="va">postcodes_as_text</span>, <span class="va">NL_postcode_HT_x</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="fu"><a href="../reference/naxp_encode.html">naxp_encode</a></span><span class="op">(</span><span class="va">postcodes_as_text</span>, <span class="va">ht_postcode_naxp</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 684114 684114 684114      0</span></span></code></pre></div>
 <p>See <a href="https://naxp.org/migrate/" class="external-link">naxp.org/migrate</a> to play
 with an interactive version (which also helps interpret the results if
@@ -344,6 +321,30 @@ its location.</p>
 <span><span class="co">#&gt; [1] 9</span></span></code></pre></div>
 <p>The <code>NAXP...</code> error codes are the same in every
 <strong>naxp</strong> library.</p>
+</div>
+<div class="section level2">
+<h2 id="naxp-constraints-in-r">
+<strong>naxp</strong> constraints in R<a class="anchor" aria-label="anchor" href="#naxp-constraints-in-r"></a>
+</h2>
+<p>The <strong>naxp</strong> specification permits up to
+2<sup>64</sup>−1 encoded values but R does not have built-in 64-bit
+integers. Consequently,</p>
+<ul>
+<li>
+<strong>naxp</strong>s with a maximum encoded value up to
+2<sup>31</sup>−1 are stored as <code>integer</code>,</li>
+<li>
+<strong>naxp</strong>s with a maximum encoded value up to
+2<sup>53</sup> are stored as <code>double</code>, otherwise</li>
+<li>the functions that return or accept encoded values, such as
+<code><a href="../reference/naxp_encode.html">naxp_encode()</a></code> and <code><a href="../reference/naxp_encode.html">naxp_decode()</a></code>, raise an
+error<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content='&lt;p&gt;For compatibility with other &lt;strong&gt;naxp&lt;/strong&gt;
+implementations, &lt;code&gt;&lt;a href="../reference/naxp_parse.html"&gt;naxp_parse()&lt;/a&gt;&lt;/code&gt; still parses such a
+&lt;strong&gt;naxp&lt;/strong&gt;, and &lt;code&gt;&lt;a href="../reference/naxp_accepts.html"&gt;naxp_accepts()&lt;/a&gt;&lt;/code&gt;,
+&lt;code&gt;&lt;a href="../reference/naxp_accepts.html"&gt;naxp_canonical_form()&lt;/a&gt;&lt;/code&gt;, &lt;code&gt;&lt;a href="../reference/naxp_compare.html"&gt;naxp_compare()&lt;/a&gt;&lt;/code&gt; and
+&lt;code&gt;&lt;a href="../reference/naxp_emit.html"&gt;naxp_emit()&lt;/a&gt;&lt;/code&gt; do &lt;em&gt;not&lt;/em&gt; raise an error, but instead
+work in line with the &lt;strong&gt;naxp&lt;/strong&gt; specification.&lt;/p&gt;'><sup>3</sup></a>.</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="code-generation">Code generation<a class="anchor" aria-label="anchor" href="#code-generation"></a>

@@ -114,43 +114,43 @@ indentation, so the fragment can sit inside an indented wrapper.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu">naxp_emit</span><span class="op">(</span><span class="st">r"(\9\9\9\9 \s!! \A\A)"</span>, <span class="st">"javascript"</span>, prefix <span class="op">=</span> <span class="st">"nl_postcode"</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu">naxp_emit</span><span class="op">(</span><span class="st">r"(\9\9\9\9 \s!! \A\A)"</span>, <span class="st">"javascript"</span>, prefix <span class="op">=</span> <span class="st">"postcodeNL"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** The naxp this code was generated from. */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> const nl_postcodePattern = '\\9\\9\\9\\9 \\s!! \\A\\A';</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> const postcodeNLPattern = '\\9\\9\\9\\9 \\s!! \\A\\A';</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** The largest encoded value this naxp produces, which is also how many it has. */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> const nl_postcodeMaxEncodedValue = 6_760_000;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> const postcodeNLMaxEncodedValue = 6_760_000;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** The length of the longest string this naxp can decode a value to. */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> const nl_postcodeMaxLength = 7;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> const postcodeNLMaxLength = 7;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** Whether this naxp accepts a string, or the ASCII text in a Uint8Array. A byte outside ASCII is never accepted.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  * @param {string | Uint8Array} text</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  * @returns {boolean}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeAccepts(text) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLAccepts(text) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	const bytes = typeof text !== 'string';</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	let state = 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	for (let i = 0; i &lt; text.length; i++) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 		const c = bytes ? text[i] : text.charCodeAt(i);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 		state = nl_postcodeAcceptStep(state, c);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 		state = postcodeNLAcceptStep(state, c);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 		if (state &lt; 0) { return false; }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	return nl_postcodeIsAccepting(state);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	return postcodeNLIsAccepting(state);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** The encoded value of a string, or of the ASCII text in a Uint8Array, from 1 to the largest encoded value, or zero where it is invalid.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  * @param {string | Uint8Array} text</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  * @returns {number}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeEncode(text) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	const canonical = nl_postcodeCanonicalise(text);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLEncode(text) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	const canonical = postcodeNLCanonicalise(text);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	return canonical === null ? 0 : nl_postcodeRank(canonical);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	return canonical === null ? 0 : postcodeNLRank(canonical);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** The string a value stands for, which is in canonical form.</span>
@@ -158,12 +158,12 @@ indentation, so the fragment can sit inside an indented wrapper.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  * @returns {string}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  * @throws {RangeError} The value is not one this naxp produces.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeDecode(value) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	if (value &lt; 1 || value &gt; nl_postcodeMaxEncodedValue) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLDecode(value) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	if (value &lt; 1 || value &gt; postcodeNLMaxEncodedValue) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 		throw new RangeError('This naxp encodes the values 1 to 6760000.');</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	return String.fromCharCode.apply(null, nl_postcodeDecodeCore(value));</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	return String.fromCharCode.apply(null, postcodeNLDecodeCore(value));</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** The string a value stands for, as ASCII bytes.</span>
@@ -171,36 +171,36 @@ indentation, so the fragment can sit inside an indented wrapper.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  * @returns {Uint8Array}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  * @throws {RangeError} The value is not one this naxp produces.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeDecodeToBytes(value) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	if (value &lt; 1 || value &gt; nl_postcodeMaxEncodedValue) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLDecodeToBytes(value) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	if (value &lt; 1 || value &gt; postcodeNLMaxEncodedValue) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 		throw new RangeError('This naxp encodes the values 1 to 6760000.');</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	return Uint8Array.from(nl_postcodeDecodeCore(value));</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	return Uint8Array.from(postcodeNLDecodeCore(value));</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** The string a value stands for, which is in canonical form, or null where the value is not one this naxp produces.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  * @param {number} value</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  * @returns {string | null}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeTryDecode(value) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	if (value &lt; 1 || value &gt; nl_postcodeMaxEncodedValue) { return null; }</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLTryDecode(value) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	if (value &lt; 1 || value &gt; postcodeNLMaxEncodedValue) { return null; }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	return String.fromCharCode.apply(null, nl_postcodeDecodeCore(value));</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	return String.fromCharCode.apply(null, postcodeNLDecodeCore(value));</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** The canonical form of a string, or of the ASCII text in a Uint8Array, or null where it is invalid.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  * @param {string | Uint8Array} text</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  * @returns {string | null}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeGetCanonicalForm(text) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	const canonical = nl_postcodeCanonicalise(text);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLGetCanonicalForm(text) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	const canonical = postcodeNLCanonicalise(text);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	return canonical === null ? null : String.fromCharCode.apply(null, canonical);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** The code points of the canonical form of a string, or of the ASCII text in a Uint8Array, or null where it is invalid. */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeCanonicalise(text) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLCanonicalise(text) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	const bytes = typeof text !== 'string';</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	const canonical = [];</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	let state = 0;</span>
@@ -208,43 +208,43 @@ indentation, so the fragment can sit inside an indented wrapper.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	for (let i = 0; i &lt; text.length; i++) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 		const c = bytes ? text[i] : text.charCodeAt(i);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 		state = nl_postcodeCanonicalStep(state, c, canonical);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 		state = postcodeNLCanonicalStep(state, c, canonical);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 		if (state &lt; 0) { return null; }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	return nl_postcodeFinishCanonical(state, canonical) ? canonical : null;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	return postcodeNLFinishCanonical(state, canonical) ? canonical : null;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** The rank of a canonical string, as code points, within the canonical language, or zero where it is not in it. */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeRank(codes) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLRank(codes) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	const acc = { total: 0 };</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	let state = 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	for (let i = 0; i &lt; codes.length; i++) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 		state = nl_postcodeEncodeStep(state, codes[i], acc);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 		state = postcodeNLEncodeStep(state, codes[i], acc);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 		if (state &lt; 0) { return 0; }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 	return nl_postcodeIsCanonicalAccepting(state) ? acc.total + 1 : 0;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 	return postcodeNLIsCanonicalAccepting(state) ? acc.total + 1 : 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** The code points of an encoded value already checked against the largest one. */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeDecodeCore(value) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLDecodeCore(value) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	const codes = [];</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	const box = { remaining: value };</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	let state = 0;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	while (state &gt;= 0) {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 		state = nl_postcodeDecodeStep(state, box, codes);</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 		state = postcodeNLDecodeStep(state, box, codes);</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	}</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	return codes;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** The acceptor's transition: the next state, or -1 where the code point fits nothing. */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeAcceptStep(state, c) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLAcceptStep(state, c) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	switch (state) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 		case 0:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 			if (c &gt;= 0x30 &amp;&amp; c &lt;= 0x39) { return 1; }</span>
@@ -276,7 +276,7 @@ indentation, so the fragment can sit inside an indented wrapper.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** Whether the input may end in this state. */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeIsAccepting(state) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLIsAccepting(state) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	switch (state) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 		case 7:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 			return true;</span>
@@ -286,7 +286,7 @@ indentation, so the fragment can sit inside an indented wrapper.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** The canonical machine's transition, accumulating the values skipped: the next state, or -1. */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeEncodeStep(state, c, acc) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLEncodeStep(state, c, acc) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	switch (state) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 		case 0:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 			if (c &gt;= 0x30 &amp;&amp; c &lt;= 0x39) { acc.total += 676_000 * (c - 0x30); return 1; }</span>
@@ -317,7 +317,7 @@ indentation, so the fragment can sit inside an indented wrapper.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** Whether the input may end in this state. */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeIsCanonicalAccepting(state) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLIsCanonicalAccepting(state) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	switch (state) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 		case 7:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 			return true;</span>
@@ -327,7 +327,7 @@ indentation, so the fragment can sit inside an indented wrapper.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** One step of decoding: appends at most one code point and returns the next state, or -1 when the string is complete. */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeDecodeStep(state, box, codes) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLDecodeStep(state, box, codes) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	let index;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	switch (state) {</span>
@@ -380,7 +380,7 @@ indentation, so the fragment can sit inside an indented wrapper.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** The canonicalising transition, appending what reading the code point emits: the next state, or -1. */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeCanonicalStep(state, c, canonical) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLCanonicalStep(state, c, canonical) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	switch (state) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 		case 0:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 			if (c &gt;= 0x30 &amp;&amp; c &lt;= 0x39) {</span>
@@ -435,7 +435,7 @@ indentation, so the fragment can sit inside an indented wrapper.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> /** Appends what ending the input emits, and returns whether the input may end here. */</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> function nl_postcodeFinishCanonical(state, canonical) {</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> function postcodeNLFinishCanonical(state, canonical) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 	switch (state) {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 		case 7:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 			return true;</span>

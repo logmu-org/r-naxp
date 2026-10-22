@@ -44,14 +44,17 @@ The standard naxps are described at <https://naxp.org/standard/>.
 ## Examples
 
 ``` r
-uk_postcode <- naxp_standard("uk-postcode")
-naxp_encode(c("EC4M 7AA", "EC4M7AA", "B1 1AA"), uk_postcode)
-#> <naxp_encoded[3]> \A\A?\9\X? \s!! \9\A\A | GIR \s!! 0AA
-#> [1] EC4M 7AA EC4M 7AA B1 1AA  
+postcodes_as_text <- c("B11AA", "B1 1AA", "B1   1AA")
 
-naxp_standard("nl-postcode", "no-separator")
-#> <naxp> \9\9\9\9 \s!? \A\A
-#> Maximum encoded value: 6760000
+default_naxp <- naxp_standard("uk-postcode")
+naxp_encode(postcodes_as_text, default_naxp)
+#> <naxp_encoded[3]> \A\A?\9\X? \s!! \9\A\A | GIR \s!! 0AA
+#> [1] B1 1AA        B1 1AA        <invalid (0)>
+
+padding_tolerant_naxp <- naxp_standard("uk-postcode", "padding-tolerant")
+naxp_encode(postcodes_as_text, padding_tolerant_naxp)
+#> <naxp_encoded[3]> (\A\A\9\X|\A\A\9\s!?|\A\9\X\s!?|\A\9\s!?\s!?) \s!! \9\A\A | GIR \s!?\s!?\s!! 0AA
+#> [1] B1 1AA B1 1AA B1 1AA
 
 naxp_standards()[, c("id", "variant")]
 #>                   id           variant

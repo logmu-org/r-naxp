@@ -90,14 +90,17 @@ keep their meaning.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">uk_postcode</span> <span class="op">&lt;-</span> <span class="fu">naxp_standard</span><span class="op">(</span><span class="st">"uk-postcode"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="naxp_encode.html">naxp_encode</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"EC4M 7AA"</span>, <span class="st">"EC4M7AA"</span>, <span class="st">"B1 1AA"</span><span class="op">)</span>, <span class="va">uk_postcode</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;naxp_encoded[3]&gt; \A\A?\9\X? \s!! \9\A\A | GIR \s!! 0AA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] EC4M 7AA EC4M 7AA B1 1AA  </span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">postcodes_as_text</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"B11AA"</span>, <span class="st">"B1 1AA"</span>, <span class="st">"B1   1AA"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">naxp_standard</span><span class="op">(</span><span class="st">"nl-postcode"</span>, <span class="st">"no-separator"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;naxp&gt; \9\9\9\9 \s!? \A\A</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Maximum encoded value: 6760000</span>
+<span class="r-in"><span><span class="va">default_naxp</span> <span class="op">&lt;-</span> <span class="fu">naxp_standard</span><span class="op">(</span><span class="st">"uk-postcode"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="naxp_encode.html">naxp_encode</a></span><span class="op">(</span><span class="va">postcodes_as_text</span>, <span class="va">default_naxp</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;naxp_encoded[3]&gt; \A\A?\9\X? \s!! \9\A\A | GIR \s!! 0AA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B1 1AA        B1 1AA        &lt;invalid (0)&gt;</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">padding_tolerant_naxp</span> <span class="op">&lt;-</span> <span class="fu">naxp_standard</span><span class="op">(</span><span class="st">"uk-postcode"</span>, <span class="st">"padding-tolerant"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="naxp_encode.html">naxp_encode</a></span><span class="op">(</span><span class="va">postcodes_as_text</span>, <span class="va">padding_tolerant_naxp</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;naxp_encoded[3]&gt; (\A\A\9\X|\A\A\9\s!?|\A\9\X\s!?|\A\9\s!?\s!?) \s!! \9\A\A | GIR \s!?\s!?\s!! 0AA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] B1 1AA B1 1AA B1 1AA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">naxp_standards</span><span class="op">(</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"id"</span>, <span class="st">"variant"</span><span class="op">)</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   id           variant</span>

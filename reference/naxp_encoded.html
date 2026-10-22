@@ -103,18 +103,18 @@ errors. <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">s
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">nl_postcode</span> <span class="op">&lt;-</span> <span class="fu"><a href="naxp_parse.html">naxp_parse</a></span><span class="op">(</span><span class="st">r"(\9\9\9\9 \s!! \A\A)"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">postcode_naxp</span> <span class="op">&lt;-</span> <span class="fu"><a href="naxp_parse.html">naxp_parse</a></span><span class="op">(</span><span class="st">r"(\9\9\9\9 \s!! \A\A)"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">codes</span> <span class="op">&lt;-</span> <span class="fu">naxp_encoded</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">684114</span>, <span class="fl">0</span>, <span class="fl">6760000</span><span class="op">)</span>, <span class="va">nl_postcode</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">codes</span></span></span>
+<span class="r-in"><span><span class="va">postcodes</span> <span class="op">&lt;-</span> <span class="fu">naxp_encoded</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">684114</span>, <span class="fl">0</span>, <span class="fl">6760000</span><span class="op">)</span>, <span class="va">postcode_naxp</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">postcodes</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;naxp_encoded[3]&gt; \9\9\9\9 \s!! \A\A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1012 AB       &lt;invalid (0)&gt; 9999 ZZ      </span>
-<span class="r-in"><span><span class="va">codes</span> <span class="op">==</span> <span class="st">"1012 AB"</span></span></span>
+<span class="r-in"><span><span class="va">postcodes</span> <span class="op">==</span> <span class="st">"1012 AB"</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  TRUE FALSE FALSE</span>
-<span class="r-in"><span><span class="va">codes</span> <span class="op">==</span> <span class="fl">0</span></span></span>
+<span class="r-in"><span><span class="va">postcodes</span> <span class="op">==</span> <span class="fl">0</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE  TRUE FALSE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>postcode <span class="op">=</span> <span class="va">codes</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>postcode <span class="op">=</span> <span class="va">postcodes</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        postcode</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1       1012 AB</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 &lt;invalid (0)&gt;</span>

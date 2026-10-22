@@ -60,8 +60,8 @@ for a naxp's properties.
 ## Examples
 
 ``` r
-nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
-nl_postcode
+postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+postcode_naxp
 #> <naxp> \9\9\9\9 \s!! \A\A
 #> Maximum encoded value: 6760000
 
