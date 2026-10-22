@@ -33,8 +33,8 @@ Neither needs the text's encoded value, so both work for a naxp of any
 size.
 }
 \examples{
-nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 
-naxp_accepts(c("1012AB", "1012 AB", "1012-AB"), nl_postcode)
-naxp_canonical_form(c("1012AB", "1012 AB", "1012-AB"), nl_postcode)
+naxp_accepts(c("1012AB", "1012 AB", "1012-AB"), postcode_naxp)
+naxp_canonical_form(c("1012AB", "1012 AB", "1012-AB"), postcode_naxp)
 }

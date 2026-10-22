@@ -49,14 +49,14 @@ which is the largest whole number R holds exactly, both functions raise an
 error.
 }
 \examples{
-nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 
-codes <- naxp_encode(c("1012AB", "1012 AB", "not a postcode"), nl_postcode)
-codes
-as.integer(codes)
+postcodes <- naxp_encode(c("1012AB", "1012 AB", "not a postcode"), postcode_naxp)
+postcodes
+as.integer(postcodes)
 
-naxp_decode(codes)
-naxp_decode(684114L, nl_postcode)
+naxp_decode(postcodes)
+naxp_decode(684114L, postcode_naxp)
 }
 \seealso{
 \code{\link[=naxp_accepts]{naxp_accepts()}} and \code{\link[=naxp_canonical_form]{naxp_canonical_form()}} to check text without

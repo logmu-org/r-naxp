@@ -29,10 +29,13 @@
 #'   prints, in Markdown).
 #'
 #' @examples
-#' uk_postcode <- naxp_standard("uk-postcode")
-#' naxp_encode(c("EC4M 7AA", "EC4M7AA", "B1 1AA"), uk_postcode)
+#' postcodes_as_text <- c("B11AA", "B1 1AA", "B1   1AA")
 #'
-#' naxp_standard("nl-postcode", "no-separator")
+#' default_naxp <- naxp_standard("uk-postcode")
+#' naxp_encode(postcodes_as_text, default_naxp)
+#'
+#' padding_tolerant_naxp <- naxp_standard("uk-postcode", "padding-tolerant")
+#' naxp_encode(postcodes_as_text, padding_tolerant_naxp)
 #'
 #' naxp_standards()[, c("id", "variant")]
 #' @export

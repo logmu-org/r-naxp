@@ -47,12 +47,12 @@ invalid text. Arithmetic, \code{<}, \code{>} and summaries such as \code{\link[=
 errors. \code{\link[=sort]{sort()}} and \code{\link[=order]{order()}} sort by encoded value.
 }
 \examples{
-nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 
-codes <- naxp_encoded(c(684114, 0, 6760000), nl_postcode)
-codes
-codes == "1012 AB"
-codes == 0
+postcodes <- naxp_encoded(c(684114, 0, 6760000), postcode_naxp)
+postcodes
+postcodes == "1012 AB"
+postcodes == 0
 
-data.frame(postcode = codes)
+data.frame(postcode = postcodes)
 }

@@ -43,8 +43,8 @@ naxp_cache <- new.env(parent = emptyenv())
 #'   properties.
 #'
 #' @examples
-#' nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
-#' nl_postcode
+#' postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+#' postcode_naxp
 #'
 #' # An invalid pattern raises a naxp_error
 #' tryCatch(
@@ -98,14 +98,15 @@ print.naxp <- function(x, ...) {
 #' * `naxp_max_length()`: a single integer.
 #'
 #' @examples
-#' nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
-#' naxp_pattern(nl_postcode)
-#' naxp_max_encoded_value(nl_postcode)
-#' naxp_max_length(nl_postcode)
+#' postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+#'
+#' naxp_pattern(postcode_naxp)
+#' naxp_max_encoded_value(postcode_naxp)
+#' naxp_max_length(postcode_naxp)
 #'
 #' # An encoded vector stands for the naxp that encoded it
-#' codes <- naxp_encode(c("1012AB", "9999 ZZ"), nl_postcode)
-#' naxp_pattern(codes)
+#' postcodes <- naxp_encode(c("1012AB", "9999 ZZ"), postcode_naxp)
+#' naxp_pattern(postcodes)
 #' @name naxp_properties
 NULL
 

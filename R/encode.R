@@ -42,14 +42,14 @@
 #'   encoding it.
 #'
 #' @examples
-#' nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+#' postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 #'
-#' codes <- naxp_encode(c("1012AB", "1012 AB", "not a postcode"), nl_postcode)
-#' codes
-#' as.integer(codes)
+#' postcodes <- naxp_encode(c("1012AB", "1012 AB", "not a postcode"), postcode_naxp)
+#' postcodes
+#' as.integer(postcodes)
 #'
-#' naxp_decode(codes)
-#' naxp_decode(684114L, nl_postcode)
+#' naxp_decode(postcodes)
+#' naxp_decode(684114L, postcode_naxp)
 #' @export
 naxp_encode <- function(text, naxp) {
   call <- sys.call()
@@ -107,10 +107,10 @@ naxp_decode <- function(x, naxp = NULL) {
 #'   with its names, holding `NA` for `NA` and for invalid text.
 #'
 #' @examples
-#' nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+#' postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 #'
-#' naxp_accepts(c("1012AB", "1012 AB", "1012-AB"), nl_postcode)
-#' naxp_canonical_form(c("1012AB", "1012 AB", "1012-AB"), nl_postcode)
+#' naxp_accepts(c("1012AB", "1012 AB", "1012-AB"), postcode_naxp)
+#' naxp_canonical_form(c("1012AB", "1012 AB", "1012-AB"), postcode_naxp)
 #' @export
 naxp_accepts <- function(text, naxp) {
   call <- sys.call()

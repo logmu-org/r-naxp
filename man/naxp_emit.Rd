@@ -46,5 +46,5 @@ no dependency on any naxp library. The header comment, includes, namespace
 or wrapping class around it are yours to add.
 }
 \examples{
-cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "nl_postcode"))
+cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "postcodeNL"))
 }

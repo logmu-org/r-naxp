@@ -42,11 +42,14 @@
 #'   otherwise a double.
 #'
 #' @examples
-#' with_space <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
-#' without_space <- naxp_parse(r"(\9\9\9\9 \s!? \A\A)")
+#' must_have_space <- naxp_parse(r"(\9\9\9\9 \s \A\A)")
+#' prefers_space <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+#' prefers_no_space <- naxp_parse(r"(\9\9\9\9 \s!? \A\A)")
 #'
-#' naxp_compare(with_space, without_space)
-#' naxp_first_divergent_value(with_space, without_space)
+#' naxp_compare(must_have_space, prefers_space)
+#'
+#' naxp_compare(must_have_space, prefers_no_space)
+#' naxp_first_divergent_value(must_have_space, prefers_no_space)
 #' @export
 naxp_compare <- function(a, b, budget = NULL) {
   call <- sys.call()
@@ -114,7 +117,7 @@ naxp_first_divergent_value <- function(a, b) {
 #' @returns A single string: the fragment.
 #'
 #' @examples
-#' cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "nl_postcode"))
+#' cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "postcodeNL"))
 #' @export
 naxp_emit <- function(
     naxp,

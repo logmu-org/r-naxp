@@ -36,12 +36,13 @@ largest whole number R holds exactly, \code{naxp_max_encoded_value()} raises an
 error, although printing the naxp still shows the maximum.
 }
 \examples{
-nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
-naxp_pattern(nl_postcode)
-naxp_max_encoded_value(nl_postcode)
-naxp_max_length(nl_postcode)
+postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+
+naxp_pattern(postcode_naxp)
+naxp_max_encoded_value(postcode_naxp)
+naxp_max_length(postcode_naxp)
 
 # An encoded vector stands for the naxp that encoded it
-codes <- naxp_encode(c("1012AB", "9999 ZZ"), nl_postcode)
-naxp_pattern(codes)
+postcodes <- naxp_encode(c("1012AB", "9999 ZZ"), postcode_naxp)
+naxp_pattern(postcodes)
 }

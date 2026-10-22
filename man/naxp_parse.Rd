@@ -42,8 +42,8 @@ Each error code is explained at \url{https://naxp.org/error-codes/}.
 }
 
 \examples{
-nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
-nl_postcode
+postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+postcode_naxp
 
 # An invalid pattern raises a naxp_error
 tryCatch(
