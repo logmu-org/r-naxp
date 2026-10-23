@@ -1,5 +1,7 @@
 # naxp
 
+Documentation: <https://r-naxp.logmu.org/>
+
 Dealing with postcodes, flight numbers and other alphanumeric data codes
 is a common problem. Handling strings is cumbersome and the codes
 themselves can often be written in multiple different ways – for

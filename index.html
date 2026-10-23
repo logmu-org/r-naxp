@@ -73,6 +73,7 @@
 </div>
 <!-- badges: start -->
 
+<p>Documentation: <a href="https://r-naxp.logmu.org/" class="uri">https://r-naxp.logmu.org/</a></p>
 <p>Dealing with postcodes, flight numbers and other alphanumeric data codes is a common problem. Handling strings is cumbersome and the codes themselves can often be written in multiple different ways – for instance <code>EC1A1BB</code> and <code>EC1A 1BB</code> are the same UK postcode.</p>
 <p>A <strong>naxp</strong> (‘encoded ASCII expression’) simplifies this by encoding each distinct alphanumeric data code as an integer.</p>
 <p>With a <strong>naxp</strong>, you define the code system once using a flexible regex-like syntax, and then you’re done. Every <strong>naxp</strong> library, in every language (R, C, C++, C# and JavaScript), produces exactly the same encoding, which means that the encoded values are safe to store in files, to use in databases, and to pass between different programs written in different languages. And, as an added bonus, integers are more performant than strings.</p>
