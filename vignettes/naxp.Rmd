@@ -1,5 +1,6 @@
 ---
 title: "Get started with naxps"
+description: "A tour of the naxp R package covering patterns, encoding, standard naxps, comparison and code generation."
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Get started with naxps}

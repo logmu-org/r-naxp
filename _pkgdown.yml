@@ -34,6 +34,12 @@ template:
     # pkgdown inserts this verbatim, so the path is from the root.
     in_header: |
       <link rel="preload" href="/fonts/Lisnoti-woff2/Lisnoti-Regular-latin.woff2" as="font" type="font/woff2" crossorigin>
+home:
+  # The meta description search engines show. DESCRIPTION's is too long for
+  # one, so the home page gets its own.
+  description: >-
+    Convert alphanumeric codes such as postcodes to whole numbers and back
+    again in R, following the cross-language naxp standard.
 footer:
   structure:
     left: [developed_by, typeset_in]
