@@ -14,6 +14,8 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
+Documentation: <https://r-naxp.logmu.org/>
+
 Dealing with postcodes, flight numbers and other alphanumeric data codes
 is a common problem. Handling strings is cumbersome and the codes
 themselves can often be written in multiple different ways – for

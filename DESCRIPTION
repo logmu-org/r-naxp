@@ -23,8 +23,8 @@ Description: Converts alphanumeric codes such as postcodes to whole numbers
     Wraps the 'naxp' 'C++' library
     <https://naxp.org/api/#cpp>.
 License: Apache License (== 2.0)
-URL: https://naxp.org/, https://github.com/logmu-org/r-naxp,
-    https://r-naxp.logmu.org/
+URL: https://naxp.org/, https://r-naxp.logmu.org/,
+    https://github.com/logmu-org/r-naxp
 BugReports: https://github.com/logmu-org/r-naxp/issues
 Depends:
     R (>= 4.1.0)
