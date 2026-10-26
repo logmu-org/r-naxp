@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://r-naxp.logmu.org/sitemap.xml
