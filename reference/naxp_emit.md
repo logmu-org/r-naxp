@@ -66,43 +66,43 @@ A single string: the fragment.
 ## Examples
 
 ``` r
-cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "postcodeNL"))
+cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "nl_postcode"))
 #> /** The naxp this code was generated from. */
-#> const postcodeNLPattern = '\\9\\9\\9\\9 \\s!! \\A\\A';
+#> const nl_postcodePattern = '\\9\\9\\9\\9 \\s!! \\A\\A';
 #> 
 #> /** The largest encoded value this naxp produces, which is also how many it has. */
-#> const postcodeNLMaxEncodedValue = 6_760_000;
+#> const nl_postcodeMaxEncodedValue = 6_760_000;
 #> 
 #> /** The length of the longest string this naxp can decode a value to. */
-#> const postcodeNLMaxLength = 7;
+#> const nl_postcodeMaxLength = 7;
 #> 
 #> /** Whether this naxp accepts a string, or the ASCII text in a Uint8Array. A byte outside ASCII is never accepted.
 #>  * @param {string | Uint8Array} text
 #>  * @returns {boolean}
 #>  */
-#> function postcodeNLAccepts(text) {
+#> function nl_postcodeAccepts(text) {
 #>  const bytes = typeof text !== 'string';
 #>  let state = 0;
 #> 
 #>  for (let i = 0; i < text.length; i++) {
 #>      const c = bytes ? text[i] : text.charCodeAt(i);
 #> 
-#>      state = postcodeNLAcceptStep(state, c);
+#>      state = nl_postcodeAcceptStep(state, c);
 #> 
 #>      if (state < 0) { return false; }
 #>  }
 #> 
-#>  return postcodeNLIsAccepting(state);
+#>  return nl_postcodeIsAccepting(state);
 #> }
 #> 
 #> /** The encoded value of a string, or of the ASCII text in a Uint8Array, from 1 to the largest encoded value, or zero where it is invalid.
 #>  * @param {string | Uint8Array} text
 #>  * @returns {number}
 #>  */
-#> function postcodeNLEncode(text) {
-#>  const canonical = postcodeNLCanonicalise(text);
+#> function nl_postcodeEncode(text) {
+#>  const canonical = nl_postcodeCanonicalise(text);
 #> 
-#>  return canonical === null ? 0 : postcodeNLRank(canonical);
+#>  return canonical === null ? 0 : nl_postcodeRank(canonical);
 #> }
 #> 
 #> /** The string a value stands for, which is in canonical form.
@@ -110,12 +110,12 @@ cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "postcodeNL"))
 #>  * @returns {string}
 #>  * @throws {RangeError} The value is not one this naxp produces.
 #>  */
-#> function postcodeNLDecode(value) {
-#>  if (value < 1 || value > postcodeNLMaxEncodedValue) {
+#> function nl_postcodeDecode(value) {
+#>  if (value < 1 || value > nl_postcodeMaxEncodedValue) {
 #>      throw new RangeError('This naxp encodes the values 1 to 6760000.');
 #>  }
 #> 
-#>  return String.fromCharCode.apply(null, postcodeNLDecodeCore(value));
+#>  return String.fromCharCode.apply(null, nl_postcodeDecodeCore(value));
 #> }
 #> 
 #> /** The string a value stands for, as ASCII bytes.
@@ -123,36 +123,36 @@ cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "postcodeNL"))
 #>  * @returns {Uint8Array}
 #>  * @throws {RangeError} The value is not one this naxp produces.
 #>  */
-#> function postcodeNLDecodeToBytes(value) {
-#>  if (value < 1 || value > postcodeNLMaxEncodedValue) {
+#> function nl_postcodeDecodeToBytes(value) {
+#>  if (value < 1 || value > nl_postcodeMaxEncodedValue) {
 #>      throw new RangeError('This naxp encodes the values 1 to 6760000.');
 #>  }
 #> 
-#>  return Uint8Array.from(postcodeNLDecodeCore(value));
+#>  return Uint8Array.from(nl_postcodeDecodeCore(value));
 #> }
 #> 
 #> /** The string a value stands for, which is in canonical form, or null where the value is not one this naxp produces.
 #>  * @param {number} value
 #>  * @returns {string | null}
 #>  */
-#> function postcodeNLTryDecode(value) {
-#>  if (value < 1 || value > postcodeNLMaxEncodedValue) { return null; }
+#> function nl_postcodeTryDecode(value) {
+#>  if (value < 1 || value > nl_postcodeMaxEncodedValue) { return null; }
 #> 
-#>  return String.fromCharCode.apply(null, postcodeNLDecodeCore(value));
+#>  return String.fromCharCode.apply(null, nl_postcodeDecodeCore(value));
 #> }
 #> 
 #> /** The canonical form of a string, or of the ASCII text in a Uint8Array, or null where it is invalid.
 #>  * @param {string | Uint8Array} text
 #>  * @returns {string | null}
 #>  */
-#> function postcodeNLGetCanonicalForm(text) {
-#>  const canonical = postcodeNLCanonicalise(text);
+#> function nl_postcodeGetCanonicalForm(text) {
+#>  const canonical = nl_postcodeCanonicalise(text);
 #> 
 #>  return canonical === null ? null : String.fromCharCode.apply(null, canonical);
 #> }
 #> 
 #> /** The code points of the canonical form of a string, or of the ASCII text in a Uint8Array, or null where it is invalid. */
-#> function postcodeNLCanonicalise(text) {
+#> function nl_postcodeCanonicalise(text) {
 #>  const bytes = typeof text !== 'string';
 #>  const canonical = [];
 #>  let state = 0;
@@ -160,43 +160,43 @@ cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "postcodeNL"))
 #>  for (let i = 0; i < text.length; i++) {
 #>      const c = bytes ? text[i] : text.charCodeAt(i);
 #> 
-#>      state = postcodeNLCanonicalStep(state, c, canonical);
+#>      state = nl_postcodeCanonicalStep(state, c, canonical);
 #> 
 #>      if (state < 0) { return null; }
 #>  }
 #> 
-#>  return postcodeNLFinishCanonical(state, canonical) ? canonical : null;
+#>  return nl_postcodeFinishCanonical(state, canonical) ? canonical : null;
 #> }
 #> 
 #> /** The rank of a canonical string, as code points, within the canonical language, or zero where it is not in it. */
-#> function postcodeNLRank(codes) {
+#> function nl_postcodeRank(codes) {
 #>  const acc = { total: 0 };
 #>  let state = 0;
 #> 
 #>  for (let i = 0; i < codes.length; i++) {
-#>      state = postcodeNLEncodeStep(state, codes[i], acc);
+#>      state = nl_postcodeEncodeStep(state, codes[i], acc);
 #> 
 #>      if (state < 0) { return 0; }
 #>  }
 #> 
-#>  return postcodeNLIsCanonicalAccepting(state) ? acc.total + 1 : 0;
+#>  return nl_postcodeIsCanonicalAccepting(state) ? acc.total + 1 : 0;
 #> }
 #> 
 #> /** The code points of an encoded value already checked against the largest one. */
-#> function postcodeNLDecodeCore(value) {
+#> function nl_postcodeDecodeCore(value) {
 #>  const codes = [];
 #>  const box = { remaining: value };
 #>  let state = 0;
 #> 
 #>  while (state >= 0) {
-#>      state = postcodeNLDecodeStep(state, box, codes);
+#>      state = nl_postcodeDecodeStep(state, box, codes);
 #>  }
 #> 
 #>  return codes;
 #> }
 #> 
 #> /** The acceptor's transition: the next state, or -1 where the code point fits nothing. */
-#> function postcodeNLAcceptStep(state, c) {
+#> function nl_postcodeAcceptStep(state, c) {
 #>  switch (state) {
 #>      case 0:
 #>          if (c >= 0x30 && c <= 0x39) { return 1; }
@@ -228,7 +228,7 @@ cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "postcodeNL"))
 #> }
 #> 
 #> /** Whether the input may end in this state. */
-#> function postcodeNLIsAccepting(state) {
+#> function nl_postcodeIsAccepting(state) {
 #>  switch (state) {
 #>      case 7:
 #>          return true;
@@ -238,7 +238,7 @@ cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "postcodeNL"))
 #> }
 #> 
 #> /** The canonical machine's transition, accumulating the values skipped: the next state, or -1. */
-#> function postcodeNLEncodeStep(state, c, acc) {
+#> function nl_postcodeEncodeStep(state, c, acc) {
 #>  switch (state) {
 #>      case 0:
 #>          if (c >= 0x30 && c <= 0x39) { acc.total += 676_000 * (c - 0x30); return 1; }
@@ -269,7 +269,7 @@ cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "postcodeNL"))
 #> }
 #> 
 #> /** Whether the input may end in this state. */
-#> function postcodeNLIsCanonicalAccepting(state) {
+#> function nl_postcodeIsCanonicalAccepting(state) {
 #>  switch (state) {
 #>      case 7:
 #>          return true;
@@ -279,7 +279,7 @@ cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "postcodeNL"))
 #> }
 #> 
 #> /** One step of decoding: appends at most one code point and returns the next state, or -1 when the string is complete. */
-#> function postcodeNLDecodeStep(state, box, codes) {
+#> function nl_postcodeDecodeStep(state, box, codes) {
 #>  let index;
 #> 
 #>  switch (state) {
@@ -332,7 +332,7 @@ cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "postcodeNL"))
 #> }
 #> 
 #> /** The canonicalising transition, appending what reading the code point emits: the next state, or -1. */
-#> function postcodeNLCanonicalStep(state, c, canonical) {
+#> function nl_postcodeCanonicalStep(state, c, canonical) {
 #>  switch (state) {
 #>      case 0:
 #>          if (c >= 0x30 && c <= 0x39) {
@@ -387,7 +387,7 @@ cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "postcodeNL"))
 #> }
 #> 
 #> /** Appends what ending the input emits, and returns whether the input may end here. */
-#> function postcodeNLFinishCanonical(state, canonical) {
+#> function nl_postcodeFinishCanonical(state, canonical) {
 #>  switch (state) {
 #>      case 7:
 #>          return true;

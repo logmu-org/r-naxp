@@ -2,6 +2,8 @@
 
 ## naxp 0.1.0
 
+CRAN release: 2026-11-03
+
 Initial CRAN release. It wraps the naxp C++ library 0.15.0.
 
 - [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md)

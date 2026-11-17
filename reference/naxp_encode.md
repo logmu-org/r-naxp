@@ -72,17 +72,17 @@ to check text without encoding it.
 ## Examples
 
 ``` r
-postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 
-postcodes <- naxp_encode(c("1012AB", "1012 AB", "not a postcode"), postcode_naxp)
-postcodes
+codes <- naxp_encode(c("1012AB", "1012 AB", "not a postcode"), nl_postcode)
+codes
 #> <naxp_encoded[3]> \9\9\9\9 \s!! \A\A
 #> [1] 1012 AB       1012 AB       <invalid (0)>
-as.integer(postcodes)
+as.integer(codes)
 #> [1] 684114 684114      0
 
-naxp_decode(postcodes)
+naxp_decode(codes)
 #> [1] "1012 AB" "1012 AB" NA       
-naxp_decode(684114L, postcode_naxp)
+naxp_decode(684114L, nl_postcode)
 #> [1] "1012 AB"
 ```

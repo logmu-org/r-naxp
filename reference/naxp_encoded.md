@@ -70,18 +70,18 @@ invalid text. Arithmetic, `<`, `>` and summaries such as
 ## Examples
 
 ``` r
-postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 
-postcodes <- naxp_encoded(c(684114, 0, 6760000), postcode_naxp)
-postcodes
+codes <- naxp_encoded(c(684114, 0, 6760000), nl_postcode)
+codes
 #> <naxp_encoded[3]> \9\9\9\9 \s!! \A\A
 #> [1] 1012 AB       <invalid (0)> 9999 ZZ      
-postcodes == "1012 AB"
+codes == "1012 AB"
 #> [1]  TRUE FALSE FALSE
-postcodes == 0
+codes == 0
 #> [1] FALSE  TRUE FALSE
 
-data.frame(postcode = postcodes)
+data.frame(postcode = codes)
 #>        postcode
 #> 1       1012 AB
 #> 2 <invalid (0)>

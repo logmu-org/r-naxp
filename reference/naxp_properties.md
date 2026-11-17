@@ -43,17 +43,16 @@ still shows the maximum.
 ## Examples
 
 ``` r
-postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
-
-naxp_pattern(postcode_naxp)
+nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+naxp_pattern(nl_postcode)
 #> [1] "\\9\\9\\9\\9 \\s!! \\A\\A"
-naxp_max_encoded_value(postcode_naxp)
+naxp_max_encoded_value(nl_postcode)
 #> [1] 6760000
-naxp_max_length(postcode_naxp)
+naxp_max_length(nl_postcode)
 #> [1] 7
 
 # An encoded vector stands for the naxp that encoded it
-postcodes <- naxp_encode(c("1012AB", "9999 ZZ"), postcode_naxp)
-naxp_pattern(postcodes)
+codes <- naxp_encode(c("1012AB", "9999 ZZ"), nl_postcode)
+naxp_pattern(codes)
 #> [1] "\\9\\9\\9\\9 \\s!! \\A\\A"
 ```

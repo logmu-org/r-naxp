@@ -18,15 +18,15 @@ For the purpose of illustration, we’ll roll our own Netherlands postcode
 
 A Netherlands postcode is four digits followed by two letters,
 officially with a space between the digits and the two letters, although
-this is often omitted.
+this is often omitted in electronic data.
 
 This **naxp** accepts both forms (but treats the version with a space as
 the canonical version):
 
 ``` r
 
-postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
-postcode_naxp
+NL_postcode_x <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+NL_postcode_x
 #> <naxp> \9\9\9\9 \s!! \A\A
 #> Maximum encoded value: 6760000
 ```
@@ -49,7 +49,7 @@ Let’s take it for a test drive:
 ``` r
 
 postcodes_as_text <- c("1012 AB", "1012AB", "1012-AB", "not a postcode")
-postcodes <- naxp_encode(postcodes_as_text, postcode_naxp)
+postcodes <- naxp_encode(postcodes_as_text, NL_postcode_x)
 postcodes
 #> <naxp_encoded[4]> \9\9\9\9 \s!! \A\A
 #> [1] 1012 AB       1012 AB       <invalid (0)> <invalid (0)>
@@ -67,11 +67,11 @@ text:
 
 ``` r
 
-naxp_decode(postcodes) # No need for the naxp (postcode_naxp)
+naxp_decode(postcodes) # No need for the naxp (NL_postcode_x)
 #> [1] "1012 AB" "1012 AB" NA        NA
-naxp_decode(684114L, postcode_naxp) # Decoding raw numbers requires a naxp
+naxp_decode(684114L, NL_postcode_x) # Decoding raw numbers requires a naxp
 #> [1] "1012 AB"
-naxp_decode(0L, postcode_naxp) # 0 means invalid -- it decodes to NA
+naxp_decode(0L, NL_postcode_x) # 0 means invalid -- it decodes to NA
 #> [1] NA
 ```
 
@@ -85,7 +85,7 @@ error:
 
 ``` r
 
-naxp_decode(6760001L, postcode_naxp)
+naxp_decode(6760001L, NL_postcode_x)
 #> Error in `naxp_decode()`:
 #> ! x[1] is 6760001, above the naxp's maximum encoded value of 6760000.
 ```
@@ -96,9 +96,9 @@ following functions:
 
 ``` r
 
-naxp_accepts(postcodes_as_text, postcode_naxp)
+naxp_accepts(postcodes_as_text, NL_postcode_x)
 #> [1]  TRUE  TRUE FALSE FALSE
-naxp_canonical_form(postcodes_as_text, postcode_naxp)
+naxp_canonical_form(postcodes_as_text, NL_postcode_x)
 #> [1] "1012 AB" "1012 AB" NA        NA
 ```
 
@@ -106,19 +106,20 @@ You can obtain properties of a **naxp**:
 
 ``` r
 
-writeLines(naxp_pattern(postcode_naxp)) # Text pattern used to define the naxp
+writeLines(naxp_pattern(NL_postcode_x)) # Text pattern used to define the naxp
 #> \9\9\9\9 \s!! \A\A
-naxp_max_encoded_value(postcode_naxp) # Maximum encoded value
+naxp_max_encoded_value(NL_postcode_x) # Maximum encoded value
 #> [1] 6760000
-naxp_max_length(postcode_naxp) # Maximum decoded text length
+naxp_max_length(NL_postcode_x) # Maximum decoded text length
 #> [1] 7
 ```
 
-## `naxp_encoded`
+## Encoded values in data
 
 The [`naxp_encode()`](https://r-naxp.logmu.org/reference/naxp_encode.md)
-function returns a `naxp_encoded` vector of encoded values, an S3 class,
-which (as noted above) includes the **naxp** used to encode the values.
+function returns a `naxp_encoded` vector of encoded values, an S3 class.
+As noted above, a `naxp_encoded` also includes the **naxp** used to
+encode the values.
 
 A `naxp_encoded` looks like text when printed, including when it’s part
 of a data frame:
@@ -127,7 +128,7 @@ of a data frame:
 
 offices <- data.frame(
   office = c("Amsterdam", "Maastricht", "Head office"),
-  postcode = naxp_encode(c("1012 AB", "6211 CA", "1012AB"), postcode_naxp)
+  postcode = naxp_encode(c("1012 AB", "6211 CA", "1012AB"), NL_postcode_x)
 )
 offices
 #>        office postcode
@@ -140,7 +141,7 @@ offices[offices$postcode == "1012 AB", ]
 #> 3 Head office  1012 AB
 ```
 
-Comparing a `naxp_encoded` with text encodes the text *before* the
+Comparing a `naxp_encoded` with text encodes the text before the
 comparison. This is why, in the above, the encoded values for `"1012AB"`
 and `"1012 AB"` both match `"1012 AB"`.
 
@@ -152,7 +153,7 @@ file, back into a `naxp_encoded` vector, use
 
 ``` r
 
-naxp_encoded(c(684114, 0), postcode_naxp)
+naxp_encoded(c(684114, 0), NL_postcode_x)
 #> <naxp_encoded[2]> \9\9\9\9 \s!! \A\A
 #> [1] 1012 AB       <invalid (0)>
 ```
@@ -161,14 +162,29 @@ It checks every value, so an illegal one is an error:
 
 ``` r
 
-naxp_encoded(6760001L, postcode_naxp)
+naxp_encoded(6760001L, NL_postcode_x)
 #> Error in `naxp_encoded()`:
 #> ! values[1] is 6760001, above the naxp's maximum encoded value of 6760000.
 ```
 
+## **naxp** constraints in R
+
+The **naxp** specification permits up to 2⁶⁴−1 encoded values but R does
+not have built-in 64-bit integers. Consequently,
+
+- **naxp**s with a maximum encoded value up to 2³¹−1 are stored as
+  `integer`,
+- **naxp**s with a maximum encoded value up to 2⁵³ are stored as
+  `double`, otherwise
+- the functions that return or accept encoded values, such as
+  [`naxp_encode()`](https://r-naxp.logmu.org/reference/naxp_encode.md)
+  and
+  [`naxp_decode()`](https://r-naxp.logmu.org/reference/naxp_encode.md),
+  raise an error[^3].
+
 ## Standard **naxp**s
 
-Standard **naxp**s are provided for widely used code systems. Their
+Standard **naxp**s are provided for widely used code systems. The
 benefits are:
 
 - Safety – a hand-written pattern can contain mistakes that silently
@@ -200,8 +216,8 @@ We could have created our Netherlands postcode **naxp** using
 
 ``` r
 
-std_postcode_naxp <- naxp_standard("nl-postcode")
-naxp_compare(postcode_naxp, std_postcode_naxp)
+NL_postcode_x2 <- naxp_standard("nl-postcode")
+naxp_compare(NL_postcode_x, NL_postcode_x2)
 #>   accepted_text        encoding canonical_forms 
 #>         "equal"         "equal"         "equal"
 ```
@@ -231,8 +247,8 @@ Let’s find out:
 
 ``` r
 
-ht_postcode_naxp <- naxp_standard("nl-postcode", "hyphen-tolerant")
-naxp_compare(postcode_naxp, ht_postcode_naxp)
+NL_postcode_HT_x <- naxp_standard("nl-postcode", "hyphen-tolerant")
+naxp_compare(NL_postcode_x, NL_postcode_HT_x)
 #>   accepted_text        encoding canonical_forms 
 #>     "subset_of"     "subset_of"         "equal"
 ```
@@ -257,11 +273,11 @@ postcodes_as_text
 #> [1] "1012 AB"        "1012AB"         "1012-AB"        "not a postcode"
 
 # Rejects "1012-AB":
-as.integer(naxp_encode(postcodes_as_text, postcode_naxp))
+as.integer(naxp_encode(postcodes_as_text, NL_postcode_x))
 #> [1] 684114 684114      0      0
 
 # Accepts "1012-AB":
-as.integer(naxp_encode(postcodes_as_text, ht_postcode_naxp))
+as.integer(naxp_encode(postcodes_as_text, NL_postcode_HT_x))
 #> [1] 684114 684114 684114      0
 ```
 
@@ -296,21 +312,6 @@ error$offset
 ```
 
 The `NAXP...` error codes are the same in every **naxp** library.
-
-## **naxp** constraints in R
-
-The **naxp** specification permits up to 2⁶⁴−1 encoded values but R does
-not have built-in 64-bit integers. Consequently,
-
-- **naxp**s with a maximum encoded value up to 2³¹−1 are stored as
-  `integer`,
-- **naxp**s with a maximum encoded value up to 2⁵³ are stored as
-  `double`, otherwise
-- the functions that return or accept encoded values, such as
-  [`naxp_encode()`](https://r-naxp.logmu.org/reference/naxp_encode.md)
-  and
-  [`naxp_decode()`](https://r-naxp.logmu.org/reference/naxp_encode.md),
-  raise an error[^3].
 
 ## Code generation
 

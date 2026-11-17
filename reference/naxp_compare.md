@@ -67,17 +67,12 @@ then raises an error rather than guess.
 ## Examples
 
 ``` r
-must_have_space <- naxp_parse(r"(\9\9\9\9 \s \A\A)")
-prefers_space <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
-prefers_no_space <- naxp_parse(r"(\9\9\9\9 \s!? \A\A)")
+with_space <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+without_space <- naxp_parse(r"(\9\9\9\9 \s!? \A\A)")
 
-naxp_compare(must_have_space, prefers_space)
+naxp_compare(with_space, without_space)
 #>   accepted_text        encoding canonical_forms 
-#>     "subset_of"     "subset_of"         "equal" 
-
-naxp_compare(must_have_space, prefers_no_space)
-#>   accepted_text        encoding canonical_forms 
-#>     "subset_of"     "subset_of"  "incomparable" 
-naxp_first_divergent_value(must_have_space, prefers_no_space)
+#>         "equal"         "equal"  "incomparable" 
+naxp_first_divergent_value(with_space, without_space)
 #> [1] 1
 ```

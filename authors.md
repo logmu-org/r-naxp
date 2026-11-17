@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/logmu-org/r-naxp/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/logmu-org/r-naxp/blob/v0.1.0/DESCRIPTION)
 
 Gordon T (2026). *naxp: Encoded ASCII Expressions*. R package version
 0.1.0, <https://naxp.org/>.
