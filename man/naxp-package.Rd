@@ -14,18 +14,18 @@ Converts alphanumeric codes such as postcodes to whole numbers and back again, f
 Useful links:
 \itemize{
   \item \url{https://naxp.org/}
-  \item \url{https://github.com/logmu-org/r-naxp}
   \item \url{https://r-naxp.logmu.org/}
+  \item \url{https://github.com/logmu-org/r-naxp}
   \item Report bugs at \url{https://github.com/logmu-org/r-naxp/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Tim Gordon \email{tim.gordon@btinternet.com} (\href{https://orcid.org/0009-0006-3087-4384}{ORCID})
+\strong{Maintainer}: Tim Gordon \email{tim@timgord.com} (\href{https://orcid.org/0009-0006-3087-4384}{ORCID})
 
 Authors:
 \itemize{
-  \item Tim Gordon \email{tim.gordon@btinternet.com} (\href{https://orcid.org/0009-0006-3087-4384}{ORCID})
+  \item Tim Gordon \email{tim@timgord.com} (\href{https://orcid.org/0009-0006-3087-4384}{ORCID})
 }
 
 }

@@ -26,7 +26,14 @@ database or a file.
 \details{
 The values are integers where the naxp's maximum encoded value is at most
 2^31 - 1, and doubles where it is at most 2^53. Above 2^53 is an error. 0
-stands for text that is not valid. Encoded values are never \code{NA}.
+stands for text that is not valid. The stored value is never \code{NA}.
+
+\code{\link[=is.na]{is.na()}} and \code{\link[=anyNA]{anyNA()}} report an encoded value of 0 as missing, so
+\code{is.na(x)} matches \code{is.na(naxp_decode(x))}. It is \code{TRUE} for text that was
+not valid as well as for text that was \code{NA}. Code that reads the stored
+values directly sees 0: \code{\link[=as.numeric]{as.numeric()}} gives 0, and \code{\link[=complete.cases]{complete.cases()}} and
+functions built on vctrs, such as \code{tidyr::drop_na()} and
+\code{dplyr::coalesce()}, treat 0 as present. \code{\link[=na.omit]{na.omit()}} treats it as missing.
 
 A \code{naxp_encoded} vector prints as the text it decodes to, with 0 shown as
 \verb{<invalid (0)>}. \code{\link[=as.character]{as.character()}} gives the text, with \code{NA} for 0, and
@@ -37,7 +44,8 @@ vectors with the same naxp, and \code{\link[=split]{split()}} returns a list of 
 \code{naxp_encoded} vector can be a data frame column. \code{\link[=order]{order()}} and \code{\link[=match]{match()}}
 return integer indices, and \code{\link[=table]{table()}} counts each distinct value, labelled
 with its text, excluding 0. Assigning into a \code{naxp_encoded} vector accepts
-another with the same naxp, or text, which is encoded. \code{\link[=c]{c()}} combines
+another with the same naxp, text, which is encoded, or \code{NA}, which stores 0,
+so \code{is.na(x) <- i} works too. \code{\link[=c]{c()}} combines
 \code{naxp_encoded} vectors with the same naxp.
 
 Encoded values are compared only for equality. \code{==} and \code{!=} compare a

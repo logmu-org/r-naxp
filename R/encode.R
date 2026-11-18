@@ -15,7 +15,8 @@
 #'
 #' Text the naxp does not accept is invalid and encodes to 0, as in every naxp
 #' library. So does `NA`, and so does any text that is not ASCII, whatever its
-#' marked encoding. Encoded values are never `NA`. `naxp_decode()` returns
+#' marked encoding. Encoded values are never `NA`, though [is.na()] reports 0
+#' as missing in a [naxp_encoded] vector. `naxp_decode()` returns
 #' `NA` for 0, because no other string can stand for it: a naxp may accept the
 #' empty string.
 #'

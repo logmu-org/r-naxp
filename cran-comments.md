@@ -1,10 +1,36 @@
-# CRAN submission comments: naxp 0.1.0
+# CRAN submission comments: naxp 0.2.0
 
 ## Summary
 
-This is a new submission. 'naxp' implements the naxp standard for encoding
-ASCII text, typically alphanumeric codes such as postcodes, as integers
-and back again, as specified at <https://naxp.org/spec/>.
+This release fixes a bug and adds `NA` handling for encoded vectors.
+
+- Indexing a `naxp_encoded` vector out of range or with `NA` stored `NA` in
+  the vector, where an encoded value must be a whole number, with 0 standing
+  for text that is not valid. It now stores 0.
+- `is.na()` and `anyNA()` report an encoded value of 0 as missing.
+- Assigning `NA` into a `naxp_encoded` vector stores 0.
+
+The maintainer's email address has also changed.
+
+## Maintainer email
+
+The maintainer's email address has changed
+- from: Tim Gordon <tim.gordon@btinternet.com>
+- to: Tim Gordon <tim@timgord.com>
+
+I can confirm the change from the old address.
+
+## Timing
+
+0.1.0 was published on 2026-11-03. I'm submitting this update sooner than
+usual because of the bug above: a `naxp_encoded` vector holding `NA` prints
+wrongly and gives `NA` in comparisons, and an ordinary data frame operation
+such as `df[c(1, NA), ]` produces one.
+
+## Changes in behaviour
+
+`is.na()` on a `naxp_encoded` vector was `FALSE` everywhere and is now `TRUE`
+for an encoded value of 0. The package has no reverse dependencies.
 
 ## Test environments
 
@@ -21,23 +47,18 @@ and back again, as specified at <https://naxp.org/spec/>.
 
 0 errors | 0 warnings | 1 note
 
-- This is a new submission.
+- New maintainer: the maintainer's email address has changed, as above.
 
-The same note reports 'naxp' and 'naxps' as possibly misspelt words in
+The same note may report 'naxp' and 'naxps' as possibly misspelt words in
 DESCRIPTION. A naxp ('encoded ASCII expression') is the name of the pattern
 the standard defines, so the word is correct, and it is lower case by design.
 
 ## Bundled code
 
-`src/` includes the 'naxp' 'C++' library, version 0.15.0, by the same author
-and under the same licence (Apache 2.0), unchanged from its tagged release at
-<https://github.com/naxp-org/naxp>. Its C++ header is vendored as
-`src/naxp_cpp.h`, renamed from `naxp.hpp` because `R CMD check` accepts only
-`.h` headers at the top of `src/`. `LICENSE.note` records this.
-
-The library is written in C++17, so `src/Makevars` sets `CXX_STD = CXX17`
-and `DESCRIPTION` declares `SystemRequirements: C++17`.
+As in 0.1.0, `src/` includes the 'naxp' 'C++' library, version 0.15.0,
+unchanged from its tagged release at <https://github.com/naxp-org/naxp>.
+`LICENSE.note` records this.
 
 ## Reverse dependencies
 
-This is a new package, so it has no reverse dependencies.
+There are no reverse dependencies.

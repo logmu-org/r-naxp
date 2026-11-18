@@ -21,7 +21,22 @@ test_that("conversion gives the text, with NA for 0, or the bare values", {
   expect_identical(as.character(codes), c("1012 AB", NA))
   expect_identical(as.integer(codes), c(684114L, 0L))
   expect_identical(as.numeric(codes), c(684114, 0))
-  expect_identical(is.na(codes), c(a = FALSE, b = FALSE))
+})
+
+test_that("is.na() and anyNA() report 0 as missing, though 0 is stored", {
+  codes <- codes_of(c(a = "1012AB", b = "junk", c = NA))
+  expect_identical(is.na(codes), c(a = FALSE, b = TRUE, c = TRUE))
+  expect_identical(is.na(codes), is.na(naxp_decode(codes)))
+  expect_identical(as.integer(codes), c(684114L, 0L, 0L))
+  expect_true(anyNA(codes))
+  expect_false(anyNA(codes[1]))
+  expect_false(anyNA(codes[0]))
+  expect_true(anyNA(list(codes[1], codes[2]), recursive = TRUE))
+  frame <- data.frame(id = 1:3, postcode = codes)
+  expect_true(anyNA(frame))
+  expect_identical(nrow(na.omit(frame)), 1L)
+  # complete.cases() reads the stored values, as the documentation says.
+  expect_identical(complete.cases(frame), c(TRUE, TRUE, TRUE))
 })
 
 test_that("subsetting and repeating keep the naxp", {
@@ -44,6 +59,16 @@ test_that("lengthening fills with 0, never NA", {
   expect_identical(as.integer(codes), c(684114L, 0L, 0L, 0L, 6760000L, 0L, 1L))
 })
 
+test_that("indexing out of range or with NA gives 0, never NA", {
+  codes <- codes_of(c("1012AB", "9999ZZ"))
+  expect_identical(codes[c(1, 3)], codes_of(c("1012AB", "junk")))
+  expect_identical(codes[NA], codes_of(c("junk", "junk")))
+  expect_identical(codes[NA_integer_], codes_of("junk"))
+  expect_identical(format(codes[3]), "<invalid (0)>")
+  frame <- data.frame(postcode = codes)
+  expect_identical(as.integer(frame[c(1, NA), "postcode"]), c(684114L, 0L))
+})
+
 test_that("assignment takes text, or values with the same naxp", {
   codes <- codes_of(c("1012AB", "9999ZZ"))
   codes[1] <- "0000 AA"
@@ -54,6 +79,21 @@ test_that("assignment takes text, or values with the same naxp", {
   expect_identical(as.integer(codes), c(0L, 684114L))
   expect_error(codes[1] <- 5L, "Assign a naxp_encoded vector")
   expect_error(codes[1] <- naxp_encode("1012AB", nl_no_separator), "different naxps")
+})
+
+test_that("assigning NA stores 0, but other logicals are errors", {
+  codes <- codes_of(c("1012AB", "9999ZZ", "0000AA"))
+  codes[1] <- NA
+  codes[[2]] <- NA
+  expect_identical(as.integer(codes), c(0L, 0L, 1L))
+  codes <- codes_of(c("1012AB", "9999ZZ", "0000AA"))
+  is.na(codes) <- 3
+  expect_identical(as.integer(codes), c(684114L, 6760000L, 0L))
+  codes[1:2] <- c(NA, NA)
+  expect_identical(as.integer(codes), c(0L, 0L, 0L))
+  expect_error(codes[1] <- TRUE, "Assign a naxp_encoded vector")
+  expect_error(codes[1:2] <- c(NA, FALSE), "Assign a naxp_encoded vector")
+  expect_error(codes == NA, "can be compared only")
 })
 
 test_that("c() combines vectors with the same naxp only", {

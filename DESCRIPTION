@@ -1,8 +1,8 @@
 Package: naxp
 Title: Encoded ASCII Expressions
-Version: 0.1.0
+Version: 0.2.0
 Authors@R:
-    person("Tim", "Gordon", , "tim.gordon@btinternet.com", role = c("aut", "cre"),
+    person("Tim", "Gordon", , "tim@timgord.com", role = c("aut", "cre"),
            comment = c(ORCID = "0009-0006-3087-4384"))
 Description: Converts alphanumeric codes such as postcodes to whole numbers
     and back again, following the 'naxp' standard

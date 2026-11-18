@@ -39,7 +39,8 @@ with and without a space, and each value decodes to one canonical form.
 
 Text the naxp does not accept is invalid and encodes to 0, as in every naxp
 library. So does \code{NA}, and so does any text that is not ASCII, whatever its
-marked encoding. Encoded values are never \code{NA}. \code{naxp_decode()} returns
+marked encoding. Encoded values are never \code{NA}, though \code{\link[=is.na]{is.na()}} reports 0
+as missing in a \link{naxp_encoded} vector. \code{naxp_decode()} returns
 \code{NA} for 0, because no other string can stand for it: a naxp may accept the
 empty string.
 

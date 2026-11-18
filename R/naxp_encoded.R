@@ -13,7 +13,14 @@
 #'
 #' The values are integers where the naxp's maximum encoded value is at most
 #' 2^31 - 1, and doubles where it is at most 2^53. Above 2^53 is an error. 0
-#' stands for text that is not valid. Encoded values are never `NA`.
+#' stands for text that is not valid. The stored value is never `NA`.
+#'
+#' [is.na()] and [anyNA()] report an encoded value of 0 as missing, so
+#' `is.na(x)` matches `is.na(naxp_decode(x))`. It is `TRUE` for text that was
+#' not valid as well as for text that was `NA`. Code that reads the stored
+#' values directly sees 0: [as.numeric()] gives 0, and [complete.cases()] and
+#' functions built on vctrs, such as `tidyr::drop_na()` and
+#' `dplyr::coalesce()`, treat 0 as present. [na.omit()] treats it as missing.
 #'
 #' A `naxp_encoded` vector prints as the text it decodes to, with 0 shown as
 #' `<invalid (0)>`. [as.character()] gives the text, with `NA` for 0, and
@@ -24,7 +31,8 @@
 #' `naxp_encoded` vector can be a data frame column. [order()] and [match()]
 #' return integer indices, and [table()] counts each distinct value, labelled
 #' with its text, excluding 0. Assigning into a `naxp_encoded` vector accepts
-#' another with the same naxp, or text, which is encoded. [c()] combines
+#' another with the same naxp, text, which is encoded, or `NA`, which stores 0,
+#' so `is.na(x) <- i` works too. [c()] combines
 #' `naxp_encoded` vectors with the same naxp.
 #'
 #' Encoded values are compared only for equality. `==` and `!=` compare a
@@ -80,7 +88,8 @@ bare_values <- function(x) {
   x
 }
 
-# Positions a vector gained by being lengthened hold NA; encoded values never do.
+# Positions a vector gained by being lengthened, or by indexing out of range or
+# with NA, hold NA; encoded values never do.
 fill_zero <- function(values) {
   if (anyNA(values)) {
     values[is.na(values)] <- if (is.integer(values)) 0L else 0
@@ -102,6 +111,10 @@ values_under <- function(value, naxp, call, numbers_allowed) {
   if (numbers_allowed && is.numeric(value)) {
     return(value)
   }
+  # Assigning NA stores 0, as encoding NA does.
+  if (!numbers_allowed && is.logical(value) && all(is.na(value))) {
+    return(integer(length(value)))
+  }
   raise(
     if (numbers_allowed) {
       paste(
@@ -109,7 +122,7 @@ values_under <- function(value, naxp, call, numbers_allowed) {
         "with text, or with numbers as bare values."
       )
     } else {
-      "Assign a naxp_encoded vector with the same naxp, or text, which is encoded."
+      "Assign a naxp_encoded vector with the same naxp, text to encode, or NA."
     },
     call
   )
@@ -139,6 +152,16 @@ as.character.naxp_encoded <- function(x, ...) {
 }
 
 #' @export
+is.na.naxp_encoded <- function(x) {
+  bare_values(x) == 0
+}
+
+#' @export
+anyNA.naxp_encoded <- function(x, recursive = FALSE) {
+  any(bare_values(x) == 0)
+}
+
+#' @export
 as.data.frame.naxp_encoded <- function(
     x,
     row.names = NULL,
@@ -150,7 +173,7 @@ as.data.frame.naxp_encoded <- function(
 
 #' @export
 `[.naxp_encoded` <- function(x, ...) {
-  new_naxp_encoded(NextMethod(), attr(x, "naxp"))
+  new_naxp_encoded(fill_zero(NextMethod()), attr(x, "naxp"))
 }
 
 #' @export
