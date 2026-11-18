@@ -14,26 +14,34 @@ naxp_max_encoded_value(naxp)
 naxp_max_length(naxp)
 }
 \arguments{
-\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a \link{naxp_encoded}
-vector, whose naxp is used.}
+\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a
+\link[=encoded-vectors]{naxp_encoded} vector, whose naxp is used.}
 }
 \value{
 \itemize{
 \item \code{naxp_pattern()}: a single string.
-\item \code{naxp_max_encoded_value()}: a single integer or double.
+\item \code{naxp_max_encoded_value()}: a single \code{integer} or \code{double}.
 \item \code{naxp_max_length()}: a single integer.
 }
 }
 \description{
-The pattern a naxp was parsed from, its largest encoded value and the length
-of its longest canonical form.
+Get the pattern that a naxp was parsed from, its maximum encoded value and
+the length of its longest canonical form.
 }
 \details{
-Encoded values run from 1 to the maximum with no gaps, so the maximum is also
-the number of distinct encoded values. It is an integer where it is at most
-2^31 - 1 and a double where it is at most 2^53. Above 2^53, which is the
-largest whole number R holds exactly, \code{naxp_max_encoded_value()} raises an
-error, although printing the naxp still shows the maximum.
+Encoded values run from 1 to the maximum encoded value with no gaps, which
+means that the maximum is also the number of distinct non-zero encoded
+values.
+
+\code{naxp_max_encoded_value()} returns
+\itemize{
+\item an \code{integer} if the maximum is less than \eqn{2^{31}}{2^31}, or
+\item a \code{double} if it is in the range \eqn{2^{31}}{2^31} to \eqn{2^{53}}{2^53}.
+}
+
+If the maximum is over \eqn{2^{53}}{2^53}, \code{naxp_max_encoded_value()} raises
+an error, because a \code{double} cannot store every integer over
+\eqn{2^{53}}{2^53} exactly. Printing the naxp still shows the maximum.
 }
 \examples{
 postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
@@ -42,7 +50,7 @@ naxp_pattern(postcode_naxp)
 naxp_max_encoded_value(postcode_naxp)
 naxp_max_length(postcode_naxp)
 
-# An encoded vector stands for the naxp that encoded it
+# An encoded vector can be used in place of the naxp that encoded it
 postcodes <- naxp_encode(c("1012AB", "9999 ZZ"), postcode_naxp)
 naxp_pattern(postcodes)
 }

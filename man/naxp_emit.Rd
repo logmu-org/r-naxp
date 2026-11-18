@@ -16,8 +16,8 @@ naxp_emit(
 )
 }
 \arguments{
-\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a \link{naxp_encoded}
-vector, whose naxp is used.}
+\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a
+\link[=encoded-vectors]{naxp_encoded} vector, whose naxp is used.}
 
 \item{language}{The language to emit: \code{"csharp"}, \code{"javascript"}, \code{"c"}
 (C99) or \code{"cpp"} (C++17).}
@@ -26,8 +26,8 @@ vector, whose naxp is used.}
 share one scope. \code{""} gives the bare names. Each language applies its own
 casing convention to it.}
 
-\item{value_type}{The integer type the generated code uses for encoded
-values. The naxp's maximum encoded value must fit it.}
+\item{value_type}{The integer type that the generated code uses for encoded
+values. The naxp's maximum encoded value must fit in it.}
 
 \item{initial_indent}{What every line starts with ahead of its own
 indentation, so the fragment can sit inside an indented wrapper.}
@@ -40,10 +40,13 @@ indentation, so the fragment can sit inside an indented wrapper.}
 A single string: the fragment.
 }
 \description{
-Writes a naxp as source code in another language: a fragment of declarations
-that answer the same questions this package does, for that one naxp, with
-no dependency on any naxp library. The header comment, includes, namespace
-or wrapping class around it are yours to add.
+Writes a naxp as source code in another language. The result is a fragment
+of declarations that answers the same questions as this package does, for
+that one naxp, with no dependency on any naxp library.
+}
+\details{
+You need to add any header comment, includes, namespace or wrapping class
+around it.
 }
 \examples{
 cat(naxp_emit(r"(\9\9\9\9 \s!! \A\A)", "javascript", prefix = "postcodeNL"))

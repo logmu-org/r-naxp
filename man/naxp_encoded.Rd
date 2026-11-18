@@ -2,65 +2,61 @@
 % Please edit documentation in R/naxp_encoded.R
 \name{naxp_encoded}
 \alias{naxp_encoded}
-\title{Encoded values}
+\title{Recreate encoded vectors from underlying values}
 \usage{
 naxp_encoded(values, naxp)
 }
 \arguments{
-\item{values}{An integer or double vector of whole numbers from 0 to the
-naxp's maximum encoded value. \code{NA} is an error.}
+\item{values}{An \code{integer} or \code{double} vector of non-negative integers up to
+the naxp's maximum encoded value. \code{NA} is an error.}
 
-\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a \link{naxp_encoded}
-vector, whose naxp is used.}
+\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a
+\link[=encoded-vectors]{naxp_encoded} vector, whose naxp is used.}
 }
 \value{
-A \code{naxp_encoded} vector the same length as \code{values}, with its
-names.
+A \code{naxp_encoded} vector the same length as \code{values}.
+If the elements of \code{values} are named then the same names are applied to
+the elements of the returned vector.
 }
 \description{
-A \code{naxp_encoded} vector holds encoded values together with the naxp that
-encoded them, so it can always be decoded. \code{\link[=naxp_encode]{naxp_encode()}} returns one, and
-\code{naxp_encoded()} makes one from bare values, such as values read from a
-database or a file.
+\code{naxp_encoded()} constructs a \link[=encoded-vectors]{naxp_encoded} vector from
+its underlying encoded values.
+
+\emph{This is a specialised operation – normal practice is to use
+\code{\link[=naxp_encode]{naxp_encode()}} to construct a \code{naxp_encoded} vector \strong{from text}.}
+
+\code{naxp_encoded()} is exported so that encoded values previously extracted
+using \code{\link[=as.integer]{as.integer()}} or \code{\link[=as.numeric]{as.numeric()}} and saved in a database or a file can
+be restored.
 }
 \details{
-The values are integers where the naxp's maximum encoded value is at most
-2^31 - 1, and doubles where it is at most 2^53. Above 2^53 is an error. 0
-stands for text that is not valid. The stored value is never \code{NA}.
+\code{values} must be non-negative integers up to the naxp's maximum encoded
+value, stored as either \code{integer} or \code{double}. \code{NA} is an error, because an
+encoded value is \emph{never} \code{NA}: 0 means invalid text.
 
-\code{\link[=is.na]{is.na()}} and \code{\link[=anyNA]{anyNA()}} report an encoded value of 0 as missing, so
-\code{is.na(x)} matches \code{is.na(naxp_decode(x))}. It is \code{TRUE} for text that was
-not valid as well as for text that was \code{NA}. Code that reads the stored
-values directly sees 0: \code{\link[=as.numeric]{as.numeric()}} gives 0, and \code{\link[=complete.cases]{complete.cases()}} and
-functions built on vctrs, such as \code{tidyr::drop_na()} and
-\code{dplyr::coalesce()}, treat 0 as present. \code{\link[=na.omit]{na.omit()}} treats it as missing.
+It is \code{naxp}, not the type of \code{values}, that decides how the values are
+stored:
+\itemize{
+\item \code{integer} if the naxp's maximum encoded value is less than
+\eqn{2^{31}}{2^31}, or
+\item \code{double} if it is in the range \eqn{2^{31}}{2^31} to \eqn{2^{53}}{2^53}.
+}
 
-A \code{naxp_encoded} vector prints as the text it decodes to, with 0 shown as
-\verb{<invalid (0)>}. \code{\link[=as.character]{as.character()}} gives the text, with \code{NA} for 0, and
-\code{\link[=as.integer]{as.integer()}} or \code{\link[=as.numeric]{as.numeric()}} give the bare values.
-
-Subsetting, \code{\link[=rep]{rep()}}, \code{\link[=rev]{rev()}}, \code{\link[=unique]{unique()}} and \code{\link[=sort]{sort()}} return \code{naxp_encoded}
-vectors with the same naxp, and \code{\link[=split]{split()}} returns a list of them. A
-\code{naxp_encoded} vector can be a data frame column. \code{\link[=order]{order()}} and \code{\link[=match]{match()}}
-return integer indices, and \code{\link[=table]{table()}} counts each distinct value, labelled
-with its text, excluding 0. Assigning into a \code{naxp_encoded} vector accepts
-another with the same naxp, text, which is encoded, or \code{NA}, which stores 0,
-so \code{is.na(x) <- i} works too. \code{\link[=c]{c()}} combines
-\code{naxp_encoded} vectors with the same naxp.
-
-Encoded values are compared only for equality. \code{==} and \code{!=} compare a
-\code{naxp_encoded} vector with one with the same naxp, with text, which is
-encoded first, or with numbers as bare values, so \code{x == 0} finds the
-invalid text. Arithmetic, \code{<}, \code{>} and summaries such as \code{\link[=max]{max()}} raise
-errors. \code{\link[=sort]{sort()}} and \code{\link[=order]{order()}} sort by encoded value.
+If \code{naxp} has a maximum encoded value over \eqn{2^{53}}{2^53} then an error
+is raised.
 }
 \examples{
 postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 
-postcodes <- naxp_encoded(c(684114, 0, 6760000), postcode_naxp)
-postcodes
-postcodes == "1012 AB"
-postcodes == 0
+# Values saved earlier, such as a column read from a database
+postcode_values <- c(684114L, 0L, 6760000L)
 
-data.frame(postcode = postcodes)
+postcodes <- naxp_encoded(postcode_values, postcode_naxp)
+postcodes
+}
+\seealso{
+\code{\link[=naxp_encode]{naxp_encode()}} to create a \code{naxp_encoded} vector from text and a
+naxp.
+
+\link[=encoded-vectors]{naxp_encoded} for working with a \code{naxp_encoded} vector.
 }

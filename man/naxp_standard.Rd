@@ -25,15 +25,21 @@ prints, in Markdown).
 }
 }
 \description{
-\code{naxp_standard()} gives one of the standard naxps built into every naxp
-library, and \code{naxp_standards()} lists them all.
+\code{naxp_standard()} returns one of the standard naxps that are built into every
+naxp library, and \code{naxp_standards()} lists them all.
 }
 \details{
 The standard naxps are for widely used code systems such as postcodes. Each
-has an id, such as \code{"uk-postcode"}, and one or more variants, one of which is
-\code{"default"}. The id and the variant are matched without regard to ASCII case.
-Once published, a standard naxp never changes, so values encoded with it
-keep their meaning.
+standard has
+\itemize{
+\item an id, such as \code{"uk-postcode"}, and
+\item one or more variants, one of which is \code{"default"}.
+}
+
+Ids and variants are matched without regard to ASCII case.
+
+Once published, a standard naxp \emph{never} changes, which means that values
+encoded with it keep their meaning.
 
 The standard naxps are described at \url{https://naxp.org/standard/}.
 }

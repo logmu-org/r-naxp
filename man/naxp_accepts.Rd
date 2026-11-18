@@ -12,25 +12,32 @@ naxp_canonical_form(text, naxp)
 \arguments{
 \item{text}{A character vector.}
 
-\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a \link{naxp_encoded}
-vector, whose naxp is used. For \code{naxp_decode()}, it is needed only where
-\code{x} is not a \link{naxp_encoded} vector.}
+\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a
+\link[=encoded-vectors]{naxp_encoded} vector, whose naxp is used. For
+\code{naxp_decode()}, it is needed only if \code{x} is not a
+\link[=encoded-vectors]{naxp_encoded} vector.}
 }
 \value{
 \itemize{
-\item \code{naxp_accepts()}: a logical vector the same length as \code{text}, with its
-names. It is \code{FALSE}, never \code{NA}, for \code{NA} and for invalid text.
-\item \code{naxp_canonical_form()}: a character vector the same length as \code{text},
-with its names, holding \code{NA} for \code{NA} and for invalid text.
+\item \code{naxp_accepts()}: a logical vector the same length as \code{text}. It is
+\code{FALSE}, never \code{NA}, for \code{NA} and for invalid text. If the elements of
+\code{text} are named then the same names are applied to the elements of the
+returned vector.
+\item \code{naxp_canonical_form()}: a character vector the same length as \code{text}.
+Where \code{text} is \code{NA} or invalid, the canonical form is \code{NA}. If the
+elements of \code{text} are named then the same names are applied to the
+elements of the returned vector.
 }
 }
 \description{
-\code{naxp_accepts()} says whether a naxp accepts each text, and
-\code{naxp_canonical_form()} gives the form each accepted text decodes to.
+\code{naxp_accepts()} tests whether a naxp accepts each text, and
+\code{naxp_canonical_form()} returns the canonical form that each accepted text
+decodes to.
 }
 \details{
-Neither needs the text's encoded value, so both work for a naxp of any
-size.
+Neither function needs the text's encoded value, so both work for a naxp of
+any size, including one whose maximum encoded value is over
+\eqn{2^{53}}{2^53}.
 }
 \examples{
 postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")

@@ -6,41 +6,63 @@
 
 #' Encode and decode text
 #'
-#' `naxp_encode()` encodes text as encoded values under a naxp, and
-#' `naxp_decode()` decodes them back to the canonical form of the text.
+#' `naxp_encode()` encodes text using a naxp, and `naxp_decode()` decodes the
+#' encoded values back to the canonical form of the text.
 #'
-#' Each text a naxp accepts encodes to a whole number from 1 to its maximum
-#' encoded value. Several texts may share a value, such as a postcode written
-#' with and without a space, and each value decodes to one canonical form.
+#' Each text that a naxp accepts is encoded as an integer from 1 to the naxp's
+#' maximum encoded value. Several texts may share an encoded value (for
+#' instance, a postcode written with and without a space), but each encoded
+#' value decodes to exactly one canonical form.
 #'
-#' Text the naxp does not accept is invalid and encodes to 0, as in every naxp
-#' library. So does `NA`, and so does any text that is not ASCII, whatever its
-#' marked encoding. Encoded values are never `NA`, though [is.na()] reports 0
-#' as missing in a [naxp_encoded] vector. `naxp_decode()` returns
-#' `NA` for 0, because no other string can stand for it: a naxp may accept the
-#' empty string.
+#' # Invalid text
 #'
-#' Encoded values are held as integers where the naxp's maximum encoded value
-#' is at most 2^31 - 1, and as doubles where it is at most 2^53. Above 2^53,
-#' which is the largest whole number R holds exactly, both functions raise an
-#' error.
+#' Text that the naxp does not accept is invalid and is encoded as 0, as in
+#' every naxp library. The same applies to
+#' - `NA`, and
+#' - any text that is not ASCII, whatever its marked encoding.
+#'
+#' Encoded values are *never* `NA`, although [is.na()] reports 0 as missing in
+#' a [naxp_encoded][encoded-vectors] vector.
+#'
+#' `naxp_decode()` returns `NA` for 0. No string can represent 0, because a
+#' naxp may accept the empty string.
+#'
+#' # Storage
+#'
+#' Encoded values are stored as
+#' - `integer` if the naxp's maximum encoded value is less than
+#'   \eqn{2^{31}}{2^31}, or
+#' - `double` if it is in the range \eqn{2^{31}}{2^31} to \eqn{2^{53}}{2^53}.
+#'
+#' If the maximum encoded value is over \eqn{2^{53}}{2^53}, both functions
+#' raise an error, because a `double` cannot store every integer over
+#' \eqn{2^{53}}{2^53} exactly.
 #'
 #' @param text A character vector.
-#' @param naxp A naxp from [naxp_parse()], a pattern string or a [naxp_encoded]
-#'   vector, whose naxp is used. For `naxp_decode()`, it is needed only where
-#'   `x` is not a [naxp_encoded] vector.
-#' @param x A [naxp_encoded] vector, or an integer or double vector of encoded
-#'   values. Bare values must be whole numbers from 0 to the naxp's maximum
-#'   encoded value, or `NA`.
+#' @param naxp A naxp from [naxp_parse()], a pattern string or a
+#'   [naxp_encoded][encoded-vectors] vector, whose naxp is used. For
+#'   `naxp_decode()`, it is needed only if `x` is not a
+#'   [naxp_encoded][encoded-vectors] vector.
+#' @param x A [naxp_encoded][encoded-vectors] vector, or an `integer` or
+#'   `double` vector of underlying encoded values. Underlying encoded values
+#'   must be non-negative integers up to the naxp's maximum encoded value, or
+#'   `NA`.
 #'
 #' @returns
-#' * `naxp_encode()`: a [naxp_encoded] vector the same length as `text`, with
-#'   its names.
-#' * `naxp_decode()`: a character vector the same length as `x`, with its
-#'   names, holding `NA` where a value is 0 or `NA`.
+#' * `naxp_encode()`: a [naxp_encoded][encoded-vectors] vector the same
+#'   length as `text`. If the elements of `text` are named then the same names
+#'   are applied to the elements of the returned vector.
+#' * `naxp_decode()`: a character vector of the decoded text, the same length
+#'   as `x`. Where a value is 0 or `NA`, the text is `NA`. If the elements of
+#'   `x` are named then the same names are applied to the elements of the
+#'   returned vector.
 #'
 #' @seealso [naxp_accepts()] and [naxp_canonical_form()] to check text without
 #'   encoding it.
+#'
+#'   Use [naxp_encoded()] to construct a [naxp_encoded][encoded-vectors]
+#'   vector from its underlying values (e.g. when reading encoded values from a
+#'   file or database).
 #'
 #' @examples
 #' postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
@@ -93,19 +115,25 @@ naxp_decode <- function(x, naxp = NULL) {
 
 #' Check text against a naxp
 #'
-#' `naxp_accepts()` says whether a naxp accepts each text, and
-#' `naxp_canonical_form()` gives the form each accepted text decodes to.
+#' `naxp_accepts()` tests whether a naxp accepts each text, and
+#' `naxp_canonical_form()` returns the canonical form that each accepted text
+#' decodes to.
 #'
-#' Neither needs the text's encoded value, so both work for a naxp of any
-#' size.
+#' Neither function needs the text's encoded value, so both work for a naxp of
+#' any size, including one whose maximum encoded value is over
+#' \eqn{2^{53}}{2^53}.
 #'
 #' @inheritParams naxp_encode
 #'
 #' @returns
-#' * `naxp_accepts()`: a logical vector the same length as `text`, with its
-#'   names. It is `FALSE`, never `NA`, for `NA` and for invalid text.
-#' * `naxp_canonical_form()`: a character vector the same length as `text`,
-#'   with its names, holding `NA` for `NA` and for invalid text.
+#' * `naxp_accepts()`: a logical vector the same length as `text`. It is
+#'   `FALSE`, never `NA`, for `NA` and for invalid text. If the elements of
+#'   `text` are named then the same names are applied to the elements of the
+#'   returned vector.
+#' * `naxp_canonical_form()`: a character vector the same length as `text`.
+#'   Where `text` is `NA` or invalid, the canonical form is `NA`. If the
+#'   elements of `text` are named then the same names are applied to the
+#'   elements of the returned vector.
 #'
 #' @examples
 #' postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")

@@ -11,19 +11,21 @@ naxp_cache <- new.env(parent = emptyenv())
 
 #' Parse a naxp
 #'
-#' Parses the pattern of a naxp, checking that it is valid, and returns a naxp
-#' for the other functions in the package.
+#' Parses the naxp pattern, checks it is valid, and returns the naxp instance.
 #'
-#' A naxp holds only its pattern. The compiled naxp is kept for the rest of the
-#' session, so parsing the same pattern again is cheap, and a naxp saved with
-#' [saveRDS()] or sent to a parallel worker is compiled again when first used.
+#' A `naxp` stores only its pattern, but the compiled naxp is stored for the
+#' remainder of the session, which means that re-parsing the same pattern is
+#' cheap. (A naxp saved with [saveRDS()] or sent to a parallel worker is
+#' re-compiled when first used.)
 #'
-#' Every function that takes a naxp also accepts a pattern string, which it
-#' parses in the same way, or a [naxp_encoded] vector, whose naxp it uses.
+#' Every function that takes a `naxp` also accepts:
+#'
+#' - a naxp pattern string, which it parses in the same way, or
+#' - a [naxp_encoded][encoded-vectors] vector, whose `naxp` it uses.
 #'
 #' @param pattern A single string: the pattern of the naxp.
 #'
-#' @returns A naxp: an object of class `naxp` holding the pattern.
+#' @returns A naxp: an object of class `naxp` that stores the pattern.
 #'
 #' @section Errors:
 #' An invalid pattern raises a condition of class `naxp_error`, which is also an
@@ -37,7 +39,7 @@ naxp_cache <- new.env(parent = emptyenv())
 #' * `length`: how many characters the error covers.
 #' * `pattern`: the pattern.
 #'
-#' Each error code is explained at <https://naxp.org/error-codes/>.
+#' All possible error codes are defined at <https://naxp.org/error-codes/>.
 #'
 #' @seealso [naxp_encode()] to encode text, and [naxp_pattern()] for a naxp's
 #'   properties.
@@ -80,21 +82,27 @@ print.naxp <- function(x, ...) {
 
 #' Properties of a naxp
 #'
-#' The pattern a naxp was parsed from, its largest encoded value and the length
-#' of its longest canonical form.
+#' Get the pattern that a naxp was parsed from, its maximum encoded value and
+#' the length of its longest canonical form.
 #'
-#' Encoded values run from 1 to the maximum with no gaps, so the maximum is also
-#' the number of distinct encoded values. It is an integer where it is at most
-#' 2^31 - 1 and a double where it is at most 2^53. Above 2^53, which is the
-#' largest whole number R holds exactly, `naxp_max_encoded_value()` raises an
-#' error, although printing the naxp still shows the maximum.
+#' Encoded values run from 1 to the maximum encoded value with no gaps, which
+#' means that the maximum is also the number of distinct non-zero encoded
+#' values.
 #'
-#' @param naxp A naxp from [naxp_parse()], a pattern string or a [naxp_encoded]
-#'   vector, whose naxp is used.
+#' `naxp_max_encoded_value()` returns
+#' - an `integer` if the maximum is less than \eqn{2^{31}}{2^31}, or
+#' - a `double` if it is in the range \eqn{2^{31}}{2^31} to \eqn{2^{53}}{2^53}.
+#'
+#' If the maximum is over \eqn{2^{53}}{2^53}, `naxp_max_encoded_value()` raises
+#' an error, because a `double` cannot store every integer over
+#' \eqn{2^{53}}{2^53} exactly. Printing the naxp still shows the maximum.
+#'
+#' @param naxp A naxp from [naxp_parse()], a pattern string or a
+#'   [naxp_encoded][encoded-vectors] vector, whose naxp is used.
 #'
 #' @returns
 #' * `naxp_pattern()`: a single string.
-#' * `naxp_max_encoded_value()`: a single integer or double.
+#' * `naxp_max_encoded_value()`: a single `integer` or `double`.
 #' * `naxp_max_length()`: a single integer.
 #'
 #' @examples
@@ -104,7 +112,7 @@ print.naxp <- function(x, ...) {
 #' naxp_max_encoded_value(postcode_naxp)
 #' naxp_max_length(postcode_naxp)
 #'
-#' # An encoded vector stands for the naxp that encoded it
+#' # An encoded vector can be used in place of the naxp that encoded it
 #' postcodes <- naxp_encode(c("1012AB", "9999 ZZ"), postcode_naxp)
 #' naxp_pattern(postcodes)
 #' @name naxp_properties

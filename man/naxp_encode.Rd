@@ -12,43 +12,65 @@ naxp_decode(x, naxp = NULL)
 \arguments{
 \item{text}{A character vector.}
 
-\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a \link{naxp_encoded}
-vector, whose naxp is used. For \code{naxp_decode()}, it is needed only where
-\code{x} is not a \link{naxp_encoded} vector.}
+\item{naxp}{A naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a
+\link[=encoded-vectors]{naxp_encoded} vector, whose naxp is used. For
+\code{naxp_decode()}, it is needed only if \code{x} is not a
+\link[=encoded-vectors]{naxp_encoded} vector.}
 
-\item{x}{A \link{naxp_encoded} vector, or an integer or double vector of encoded
-values. Bare values must be whole numbers from 0 to the naxp's maximum
-encoded value, or \code{NA}.}
+\item{x}{A \link[=encoded-vectors]{naxp_encoded} vector, or an \code{integer} or
+\code{double} vector of underlying encoded values. Underlying encoded values
+must be non-negative integers up to the naxp's maximum encoded value, or
+\code{NA}.}
 }
 \value{
 \itemize{
-\item \code{naxp_encode()}: a \link{naxp_encoded} vector the same length as \code{text}, with
-its names.
-\item \code{naxp_decode()}: a character vector the same length as \code{x}, with its
-names, holding \code{NA} where a value is 0 or \code{NA}.
+\item \code{naxp_encode()}: a \link[=encoded-vectors]{naxp_encoded} vector the same
+length as \code{text}. If the elements of \code{text} are named then the same names
+are applied to the elements of the returned vector.
+\item \code{naxp_decode()}: a character vector of the decoded text, the same length
+as \code{x}. Where a value is 0 or \code{NA}, the text is \code{NA}. If the elements of
+\code{x} are named then the same names are applied to the elements of the
+returned vector.
 }
 }
 \description{
-\code{naxp_encode()} encodes text as encoded values under a naxp, and
-\code{naxp_decode()} decodes them back to the canonical form of the text.
+\code{naxp_encode()} encodes text using a naxp, and \code{naxp_decode()} decodes the
+encoded values back to the canonical form of the text.
 }
 \details{
-Each text a naxp accepts encodes to a whole number from 1 to its maximum
-encoded value. Several texts may share a value, such as a postcode written
-with and without a space, and each value decodes to one canonical form.
-
-Text the naxp does not accept is invalid and encodes to 0, as in every naxp
-library. So does \code{NA}, and so does any text that is not ASCII, whatever its
-marked encoding. Encoded values are never \code{NA}, though \code{\link[=is.na]{is.na()}} reports 0
-as missing in a \link{naxp_encoded} vector. \code{naxp_decode()} returns
-\code{NA} for 0, because no other string can stand for it: a naxp may accept the
-empty string.
-
-Encoded values are held as integers where the naxp's maximum encoded value
-is at most 2^31 - 1, and as doubles where it is at most 2^53. Above 2^53,
-which is the largest whole number R holds exactly, both functions raise an
-error.
+Each text that a naxp accepts is encoded as an integer from 1 to the naxp's
+maximum encoded value. Several texts may share an encoded value (for
+instance, a postcode written with and without a space), but each encoded
+value decodes to exactly one canonical form.
 }
+\section{Invalid text}{
+Text that the naxp does not accept is invalid and is encoded as 0, as in
+every naxp library. The same applies to
+\itemize{
+\item \code{NA}, and
+\item any text that is not ASCII, whatever its marked encoding.
+}
+
+Encoded values are \emph{never} \code{NA}, although \code{\link[=is.na]{is.na()}} reports 0 as missing in
+a \link[=encoded-vectors]{naxp_encoded} vector.
+
+\code{naxp_decode()} returns \code{NA} for 0. No string can represent 0, because a
+naxp may accept the empty string.
+}
+
+\section{Storage}{
+Encoded values are stored as
+\itemize{
+\item \code{integer} if the naxp's maximum encoded value is less than
+\eqn{2^{31}}{2^31}, or
+\item \code{double} if it is in the range \eqn{2^{31}}{2^31} to \eqn{2^{53}}{2^53}.
+}
+
+If the maximum encoded value is over \eqn{2^{53}}{2^53}, both functions
+raise an error, because a \code{double} cannot store every integer over
+\eqn{2^{53}}{2^53} exactly.
+}
+
 \examples{
 postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 
@@ -62,4 +84,8 @@ naxp_decode(684114L, postcode_naxp)
 \seealso{
 \code{\link[=naxp_accepts]{naxp_accepts()}} and \code{\link[=naxp_canonical_form]{naxp_canonical_form()}} to check text without
 encoding it.
+
+Use \code{\link[=naxp_encoded]{naxp_encoded()}} to construct a \link[=encoded-vectors]{naxp_encoded}
+vector from its underlying values (e.g. when reading encoded values from a
+file or database).
 }

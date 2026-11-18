@@ -128,7 +128,7 @@ This is why, in the above, the encoded values for
 
 `sort()` sorts by encoded value.
 
-To turn bare encoded values, e.g. values read back from a database or a file, back into a `naxp_encoded` vector, use `naxp_encoded()`:
+To turn underlying encoded values, e.g. values read back from a database or a file, back into a `naxp_encoded` vector, use `naxp_encoded()`:
 
 ```{r}
 naxp_encoded(c(684114, 0), postcode_naxp)

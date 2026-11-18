@@ -10,19 +10,22 @@ naxp_parse(pattern)
 \item{pattern}{A single string: the pattern of the naxp.}
 }
 \value{
-A naxp: an object of class \code{naxp} holding the pattern.
+A naxp: an object of class \code{naxp} that stores the pattern.
 }
 \description{
-Parses the pattern of a naxp, checking that it is valid, and returns a naxp
-for the other functions in the package.
+Parses the naxp pattern, checks it is valid, and returns the naxp instance.
 }
 \details{
-A naxp holds only its pattern. The compiled naxp is kept for the rest of the
-session, so parsing the same pattern again is cheap, and a naxp saved with
-\code{\link[=saveRDS]{saveRDS()}} or sent to a parallel worker is compiled again when first used.
+A \code{naxp} stores only its pattern, but the compiled naxp is stored for the
+remainder of the session, which means that re-parsing the same pattern is
+cheap. (A naxp saved with \code{\link[=saveRDS]{saveRDS()}} or sent to a parallel worker is
+re-compiled when first used.)
 
-Every function that takes a naxp also accepts a pattern string, which it
-parses in the same way, or a \link{naxp_encoded} vector, whose naxp it uses.
+Every function that takes a \code{naxp} also accepts:
+\itemize{
+\item a naxp pattern string, which it parses in the same way, or
+\item a \link[=encoded-vectors]{naxp_encoded} vector, whose \code{naxp} it uses.
+}
 }
 \section{Errors}{
 
@@ -38,7 +41,7 @@ pattern, counting from 0 as the other naxp libraries do.
 \item \code{pattern}: the pattern.
 }
 
-Each error code is explained at \url{https://naxp.org/error-codes/}.
+All possible error codes are defined at \url{https://naxp.org/error-codes/}.
 }
 
 \examples{

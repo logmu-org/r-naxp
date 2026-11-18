@@ -5,6 +5,7 @@ authors:
 template:
   bootstrap: 5
   light-switch: yes
+  math-rendering: katex
   bslib:
     base_font: Lisnoti
     # naxp.org's colours, from its naxp.css.
@@ -74,8 +75,9 @@ reference:
   contents:
   - naxp_encode
   - naxp_accepts
-- title: Encoded vectors
+- title: Working with encoded vectors
   contents:
+  - encoded-vectors
   - naxp_encoded
 - title: Compare and emit naxps
   contents:

@@ -10,47 +10,52 @@ naxp_compare(a, b, budget = NULL)
 naxp_first_divergent_value(a, b)
 }
 \arguments{
-\item{a}{The naxp the data was encoded with: a naxp from \code{\link[=naxp_parse]{naxp_parse()}}, a
-pattern string or a \link{naxp_encoded} vector, whose naxp is used.}
+\item{a}{The naxp that the data was encoded with: a naxp from
+\code{\link[=naxp_parse]{naxp_parse()}}, a pattern string or a \link[=encoded-vectors]{naxp_encoded}
+vector, whose naxp is used.}
 
 \item{b}{The naxp proposed to replace it, likewise.}
 
 \item{budget}{\code{NULL} for the library's default budget of 200 000 product
-states, or a positive whole number.}
+states, or a positive integer.}
 }
 \value{
 \itemize{
 \item \code{naxp_compare()}: a named character vector with elements \code{accepted_text},
 \code{encoding} and \code{canonical_forms}.
-\item \code{naxp_first_divergent_value()}: a single encoded value, or 0 where every
-value both naxps hold decodes alike. Values only one naxp holds do not
-count. It is an integer where both naxps' encoded values are integers, and
-otherwise a double.
+\item \code{naxp_first_divergent_value()}: a single encoded value, or 0 if every
+encoded value that both naxps define decodes to the same text. Encoded
+values that only one naxp defines do not count. It is an \code{integer} if both
+naxps store their encoded values as \code{integer}, and otherwise a \code{double}.
 }
 }
 \description{
-\code{naxp_compare()} says how \code{b} stands to \code{a}: what happens to text and
-encoded values held under \code{a} if \code{b} replaces it. \code{naxp_first_divergent_value()}
-finds the lowest encoded value the two decode differently.
+\code{naxp_compare()} describes how naxp \code{b} relates to naxp \code{a}, i.e. what
+happens to text and encoded values stored under \code{a} if \code{b} replaces it.
 }
 \details{
-\code{naxp_compare()} gives three set relationships, each from \code{a}'s point of
+\code{naxp_first_divergent_value()} finds the lowest encoded value that the two
+naxps decode differently.
+
+\code{naxp_compare()} returns three set relationships, each from \code{a}'s point of
 view:
 \itemize{
-\item \code{accepted_text}: how the strings \code{a} accepts stand to those \code{b} accepts.
-\item \code{encoding}: how the (text, encoded value) pairs \code{a} defines stand to those
-\code{b} defines. Replacing \code{a} with \code{b} is safe for stored values exactly when
-this is \code{"equal"} or \code{"subset_of"}.
-\item \code{canonical_forms}: how the canonical forms \code{a} prints stand to those \code{b}
-prints.
+\item \code{accepted_text}: how the texts that \code{a} accepts relate to those that \code{b}
+accepts.
+\item \code{encoding}: how the (text, encoded value) pairs that \code{a} defines relate to
+those that \code{b} defines. Replacing \code{a} with \code{b} is safe for stored values
+if and only if this is \code{"equal"} or \code{"subset_of"}.
+\item \code{canonical_forms}: how the canonical forms that \code{a} prints relate to those
+that \code{b} prints.
 }
 
-Each is \code{"equal"}, \code{"subset_of"}, \code{"superset_of"} or \code{"incomparable"}.
+Each relationship is one of \code{"equal"}, \code{"subset_of"}, \code{"superset_of"} or
+\code{"incomparable"}.
 
-The encoding relationship is decided by walking the two naxps together,
-which has a budget. No naxp anybody has reason to write comes near the
-default, but a pair that does cannot be decided, and \code{naxp_compare()} then
-raises an error rather than guess.
+The \code{encoding} relationship is decided by walking the two naxps together,
+which has a budget. No naxp that anybody has reason to write comes near the
+default budget. If a pair of naxps does exceed it, the relationship cannot
+be decided, and \code{naxp_compare()} raises an error rather than guess.
 }
 \examples{
 must_have_space <- naxp_parse(r"(\9\9\9\9 \s \A\A)")

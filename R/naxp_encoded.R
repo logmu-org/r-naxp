@@ -4,60 +4,148 @@
 #
 # Copyright (c) Tim Gordon
 
-#' Encoded values
+#' Encoded vectors
 #'
-#' A `naxp_encoded` vector holds encoded values together with the naxp that
-#' encoded them, so it can always be decoded. [naxp_encode()] returns one, and
-#' `naxp_encoded()` makes one from bare values, such as values read from a
-#' database or a file.
+#' @description
+#' A `naxp_encoded` vector comprises the encoded values plus, as an attribute,
+#' the naxp that encoded them, which means it can always be decoded back to
+#' (canonical) text.
 #'
-#' The values are integers where the naxp's maximum encoded value is at most
-#' 2^31 - 1, and doubles where it is at most 2^53. Above 2^53 is an error. 0
-#' stands for text that is not valid. The stored value is never `NA`.
+#' Use [naxp_encode()] to create a `naxp_encoded` vector from a vector of text
+#' and a naxp.
 #'
-#' [is.na()] and [anyNA()] report an encoded value of 0 as missing, so
-#' `is.na(x)` matches `is.na(naxp_decode(x))`. It is `TRUE` for text that was
-#' not valid as well as for text that was `NA`. Code that reads the stored
-#' values directly sees 0: [as.numeric()] gives 0, and [complete.cases()] and
-#' functions built on vctrs, such as `tidyr::drop_na()` and
-#' `dplyr::coalesce()`, treat 0 as present. [na.omit()] treats it as missing.
+#' # Storage
 #'
-#' A `naxp_encoded` vector prints as the text it decodes to, with 0 shown as
-#' `<invalid (0)>`. [as.character()] gives the text, with `NA` for 0, and
-#' [as.integer()] or [as.numeric()] give the bare values.
+#' The storage type used for the encoded values depends on the naxp's maximum
+#' encoded value as follows:
+#' - less than \eqn{2^{31}}{2^31} is `integer`,
+#' - \eqn{2^{31}}{2^31} to \eqn{2^{53}}{2^53} is `double`, and
+#' - more than \eqn{2^{53}}{2^53} raises an error (when a function that needs
+#'   encoded values, such as [naxp_encode()], is called, *not* when a `naxp` is
+#'   created).
+#'
+#' Invalid text is *always* stored as `0`, never `NA`.
+#'
+#' # Missing values
+#'
+#' [is.na()] and [anyNA()] treat an encoded value of 0 as missing, which ensures
+#' that the encoded values of invalid text and `NA` text are both treated as
+#' missing. In particular, `is.na(x)` matches `is.na(naxp_decode(x))` and
+#' [na.omit()] drops missing values.
+#'
+#' Beware that code that reads the stored values directly will *not* treat the 0
+#' as missing. For instance, [as.numeric()] passes 0 through unchanged, and
+#' [complete.cases()] and functions built on vctrs, such as `tidyr::drop_na()`
+#' and `dplyr::coalesce()`, treat 0 as present.
+#'
+#' # Printing and conversion
+#'
+#' A `naxp_encoded` vector prints as its canonical text, with 0 shown as
+#' `<invalid (0)>`. [as.character()] produces the text, with `NA` for 0.
+#'
+#' Use [as.integer()] or [as.numeric()] to obtain the underlying encoded values.
+#'
+#' # Subsetting, assignment and combining
 #'
 #' Subsetting, [rep()], [rev()], [unique()] and [sort()] return `naxp_encoded`
-#' vectors with the same naxp, and [split()] returns a list of them. A
-#' `naxp_encoded` vector can be a data frame column. [order()] and [match()]
-#' return integer indices, and [table()] counts each distinct value, labelled
-#' with its text, excluding 0. Assigning into a `naxp_encoded` vector accepts
-#' another with the same naxp, text, which is encoded, or `NA`, which stores 0,
-#' so `is.na(x) <- i` works too. [c()] combines
-#' `naxp_encoded` vectors with the same naxp.
+#' vectors with the same naxp. [split()] returns a list of `naxp_encoded`
+#' vectors, again with the same naxp. Indexing out of range or with `NA` gives
+#' 0. A `naxp_encoded` vector can be a data frame column. [order()] and
+#' [match()] return integer indices, and [table()] counts each distinct value,
+#' labelled with its text, excluding 0.
+#'
+#' Assigning into a `naxp_encoded` vector accepts
+#' - another `naxp_encoded` vector with the same naxp,
+#' - text, which is encoded, or
+#' - `NA`, which is mapped to 0.
+#'
+#' `is.na(x) <- i` sets those elements to 0.
+#'
+#' [c()] combines `naxp_encoded` vectors with the same naxp.
+#'
+#' # Comparison
 #'
 #' Encoded values are compared only for equality. `==` and `!=` compare a
 #' `naxp_encoded` vector with one with the same naxp, with text, which is
-#' encoded first, or with numbers as bare values, so `x == 0` finds the
-#' invalid text. Arithmetic, `<`, `>` and summaries such as [max()] raise
-#' errors. [sort()] and [order()] sort by encoded value.
+#' encoded first, or with numbers as underlying values, so `x == 0` finds the
+#' invalid text.
 #'
-#' @param values An integer or double vector of whole numbers from 0 to the
-#'   naxp's maximum encoded value. `NA` is an error.
-#' @param naxp A naxp from [naxp_parse()], a pattern string or a [naxp_encoded]
-#'   vector, whose naxp is used.
+#' [sort()] and [order()] sort by encoded value, but arithmetic, `<`, `>` and
+#' summaries such as [max()] raise errors.
 #'
-#' @returns A `naxp_encoded` vector the same length as `values`, with its
-#'   names.
+#' @seealso [naxp_encode()] to create a `naxp_encoded` vector from text and a
+#'   naxp.
+#'
+#' [naxp_encoded()] to recreate a `naxp_encoded` vector from its
+#'   underlying values.
 #'
 #' @examples
 #' postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 #'
-#' postcodes <- naxp_encoded(c(684114, 0, 6760000), postcode_naxp)
+#' postcodes <- naxp_encode(c("1012AB", "9999 ZZ", "not a postcode"), postcode_naxp)
 #' postcodes
+#' as.integer(postcodes)
+#' is.na(postcodes)
+#'
 #' postcodes == "1012 AB"
-#' postcodes == 0
+#' postcodes[2:3]
+#' postcodes[3] <- "1012 AB"
+#' postcodes
 #'
 #' data.frame(postcode = postcodes)
+#' @name encoded-vectors
+NULL
+
+#' Recreate encoded vectors from underlying values
+#'
+#' @description
+#' `naxp_encoded()` constructs a [naxp_encoded][encoded-vectors] vector from
+#' its underlying encoded values.
+#'
+#' *This is a specialised operation &ndash; normal practice is to use
+#' [naxp_encode()] to construct a `naxp_encoded` vector **from text**.*
+#'
+#' `naxp_encoded()` is exported so that encoded values previously extracted
+#' using [as.integer()] or [as.numeric()] and saved in a database or a file can
+#' be restored.
+#'
+#' @details
+#' `values` must be non-negative integers up to the naxp's maximum encoded
+#' value, stored as either `integer` or `double`. `NA` is an error, because an
+#' encoded value is *never* `NA`: 0 means invalid text.
+#'
+#' It is `naxp`, not the type of `values`, that decides how the values are
+#' stored:
+#'
+#' - `integer` if the naxp's maximum encoded value is less than
+#'   \eqn{2^{31}}{2^31}, or
+#' - `double` if it is in the range \eqn{2^{31}}{2^31} to \eqn{2^{53}}{2^53}.
+#'
+#' If `naxp` has a maximum encoded value over \eqn{2^{53}}{2^53} then an error
+#' is raised.
+#'
+#' @param values An `integer` or `double` vector of non-negative integers up to
+#'   the naxp's maximum encoded value. `NA` is an error.
+#' @param naxp A naxp from [naxp_parse()], a pattern string or a
+#'   [naxp_encoded][encoded-vectors] vector, whose naxp is used.
+#'
+#' @returns A `naxp_encoded` vector the same length as `values`.
+#'   If the elements of `values` are named then the same names are applied to
+#'   the elements of the returned vector.
+#'
+#' @seealso [naxp_encode()] to create a `naxp_encoded` vector from text and a
+#'   naxp.
+#'
+#' [naxp_encoded][encoded-vectors] for working with a `naxp_encoded` vector.
+#'
+#' @examples
+#' postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+#'
+#' # Values saved earlier, such as a column read from a database
+#' postcode_values <- c(684114L, 0L, 6760000L)
+#'
+#' postcodes <- naxp_encoded(postcode_values, postcode_naxp)
+#' postcodes
 #' @export
 naxp_encoded <- function(values, naxp) {
   call <- sys.call()
@@ -119,7 +207,7 @@ values_under <- function(value, naxp, call, numbers_allowed) {
     if (numbers_allowed) {
       paste(
         "A naxp_encoded vector can be compared only with one with the same naxp,",
-        "with text, or with numbers as bare values."
+        "with text, or with numbers as underlying values."
       )
     } else {
       "Assign a naxp_encoded vector with the same naxp, text to encode, or NA."
@@ -248,7 +336,7 @@ Ops.naxp_encoded <- function(e1, e2) {
       sprintf(
         paste(
           "`%s` is not defined for naxp_encoded values, which support only == and !=.",
-          "Use as.numeric() for the bare values."
+          "Use as.numeric() for the underlying values."
         ),
         .Generic
       ),
@@ -264,7 +352,7 @@ Ops.naxp_encoded <- function(e1, e2) {
 #' @export
 Math.naxp_encoded <- function(x, ...) {
   raise(
-    sprintf("`%s()` is not defined for naxp_encoded values. Use as.numeric() for the bare values.", .Generic),
+    sprintf("`%s()` is not defined for naxp_encoded values. Use as.numeric() for the underlying values.", .Generic),
     sys.call()
   )
 }
@@ -272,7 +360,7 @@ Math.naxp_encoded <- function(x, ...) {
 #' @export
 Summary.naxp_encoded <- function(..., na.rm = FALSE) {
   raise(
-    sprintf("`%s()` is not defined for naxp_encoded values. Use as.numeric() for the bare values.", .Generic),
+    sprintf("`%s()` is not defined for naxp_encoded values. Use as.numeric() for the underlying values.", .Generic),
     sys.call()
   )
 }
