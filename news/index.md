@@ -1,5 +1,18 @@
 # Changelog
 
+## naxp 0.2.0
+
+- [`is.na()`](https://rdrr.io/r/base/NA.html) and
+  [`anyNA()`](https://rdrr.io/r/base/NA.html) report an encoded value of
+  `0` as missing in a `naxp_encoded` vector. The stored value is still
+  `0`, so [`as.numeric()`](https://rdrr.io/r/base/numeric.html),
+  [`complete.cases()`](https://rdrr.io/r/stats/complete.cases.html) and
+  functions built on vctrs, such as `tidyr::drop_na()`, still see `0`.
+- Assigning `NA` into a `naxp_encoded` vector stores `0`, so
+  `x[i] <- NA` and `is.na(x) <- i` work.
+- Indexing a `naxp_encoded` vector out of range or with `NA` gives `0`,
+  not `NA`.
+
 ## naxp 0.1.0
 
 CRAN release: 2026-11-03

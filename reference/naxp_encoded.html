@@ -13,7 +13,7 @@ database or a file."><meta property="og:image" content="https://r-naxp.logmu.org
 
     <a class="navbar-brand me-2" href="../index.html">naxp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,7 +44,7 @@ database or a file."><meta property="og:image" content="https://r-naxp.logmu.org
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Encoded values</h1>
-      <small class="dont-index">Source: <a href="https://github.com/logmu-org/r-naxp/blob/v0.1.0/R/naxp_encoded.R" class="external-link"><code>R/naxp_encoded.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/logmu-org/r-naxp/blob/main/R/naxp_encoded.R" class="external-link"><code>R/naxp_encoded.R</code></a></small>
       <div class="d-none name"><code>naxp_encoded.Rd</code></div>
     </div>
 
@@ -83,7 +83,13 @@ names.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The values are integers where the naxp's maximum encoded value is at most
 2^31 - 1, and doubles where it is at most 2^53. Above 2^53 is an error. 0
-stands for text that is not valid. Encoded values are never <code>NA</code>.</p>
+stands for text that is not valid. The stored value is never <code>NA</code>.</p>
+<p><code><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na()</a></code> and <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">anyNA()</a></code> report an encoded value of 0 as missing, so
+<code>is.na(x)</code> matches <code>is.na(naxp_decode(x))</code>. It is <code>TRUE</code> for text that was
+not valid as well as for text that was <code>NA</code>. Code that reads the stored
+values directly sees 0: <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric()</a></code> gives 0, and <code><a href="https://rdrr.io/r/stats/complete.cases.html" class="external-link">complete.cases()</a></code> and
+functions built on vctrs, such as <code>tidyr::drop_na()</code> and
+<code>dplyr::coalesce()</code>, treat 0 as present. <code><a href="https://rdrr.io/r/stats/na.fail.html" class="external-link">na.omit()</a></code> treats it as missing.</p>
 <p>A <code>naxp_encoded</code> vector prints as the text it decodes to, with 0 shown as
 <code>&lt;invalid (0)&gt;</code>. <code><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character()</a></code> gives the text, with <code>NA</code> for 0, and
 <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer()</a></code> or <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric()</a></code> give the bare values.</p>
@@ -92,7 +98,8 @@ vectors with the same naxp, and <code><a href="https://rdrr.io/r/base/split.html
 <code>naxp_encoded</code> vector can be a data frame column. <code><a href="https://rdrr.io/r/base/order.html" class="external-link">order()</a></code> and <code><a href="https://rdrr.io/r/base/match.html" class="external-link">match()</a></code>
 return integer indices, and <code><a href="https://rdrr.io/r/base/table.html" class="external-link">table()</a></code> counts each distinct value, labelled
 with its text, excluding 0. Assigning into a <code>naxp_encoded</code> vector accepts
-another with the same naxp, or text, which is encoded. <code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> combines
+another with the same naxp, text, which is encoded, or <code>NA</code>, which stores 0,
+so <code>is.na(x) &lt;- i</code> works too. <code><a href="https://rdrr.io/r/base/c.html" class="external-link">c()</a></code> combines
 <code>naxp_encoded</code> vectors with the same naxp.</p>
 <p>Encoded values are compared only for equality. <code>==</code> and <code>!=</code> compare a
 <code>naxp_encoded</code> vector with one with the same naxp, with text, which is
@@ -103,18 +110,18 @@ errors. <code><a href="https://rdrr.io/r/base/sort.html" class="external-link">s
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">nl_postcode</span> <span class="op">&lt;-</span> <span class="fu"><a href="naxp_parse.html">naxp_parse</a></span><span class="op">(</span><span class="st">r"(\9\9\9\9 \s!! \A\A)"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">postcode_naxp</span> <span class="op">&lt;-</span> <span class="fu"><a href="naxp_parse.html">naxp_parse</a></span><span class="op">(</span><span class="st">r"(\9\9\9\9 \s!! \A\A)"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">codes</span> <span class="op">&lt;-</span> <span class="fu">naxp_encoded</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">684114</span>, <span class="fl">0</span>, <span class="fl">6760000</span><span class="op">)</span>, <span class="va">nl_postcode</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">codes</span></span></span>
+<span class="r-in"><span><span class="va">postcodes</span> <span class="op">&lt;-</span> <span class="fu">naxp_encoded</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">684114</span>, <span class="fl">0</span>, <span class="fl">6760000</span><span class="op">)</span>, <span class="va">postcode_naxp</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">postcodes</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;naxp_encoded[3]&gt; \9\9\9\9 \s!! \A\A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1012 AB       &lt;invalid (0)&gt; 9999 ZZ      </span>
-<span class="r-in"><span><span class="va">codes</span> <span class="op">==</span> <span class="st">"1012 AB"</span></span></span>
+<span class="r-in"><span><span class="va">postcodes</span> <span class="op">==</span> <span class="st">"1012 AB"</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  TRUE FALSE FALSE</span>
-<span class="r-in"><span><span class="va">codes</span> <span class="op">==</span> <span class="fl">0</span></span></span>
+<span class="r-in"><span><span class="va">postcodes</span> <span class="op">==</span> <span class="fl">0</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE  TRUE FALSE</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>postcode <span class="op">=</span> <span class="va">codes</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>postcode <span class="op">=</span> <span class="va">postcodes</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>        postcode</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1       1012 AB</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 &lt;invalid (0)&gt;</span>

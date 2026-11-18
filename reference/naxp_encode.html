@@ -9,7 +9,7 @@ naxp_decode() decodes them back to the canonical form of the text."><meta proper
 
     <a class="navbar-brand me-2" href="../index.html">naxp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,7 @@ naxp_decode() decodes them back to the canonical form of the text."><meta proper
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Encode and decode text</h1>
-      <small class="dont-index">Source: <a href="https://github.com/logmu-org/r-naxp/blob/v0.1.0/R/encode.R" class="external-link"><code>R/encode.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/logmu-org/r-naxp/blob/main/R/encode.R" class="external-link"><code>R/encode.R</code></a></small>
       <div class="d-none name"><code>naxp_encode.Rd</code></div>
     </div>
 
@@ -91,7 +91,8 @@ encoded value. Several texts may share a value, such as a postcode written
 with and without a space, and each value decodes to one canonical form.</p>
 <p>Text the naxp does not accept is invalid and encodes to 0, as in every naxp
 library. So does <code>NA</code>, and so does any text that is not ASCII, whatever its
-marked encoding. Encoded values are never <code>NA</code>. <code>naxp_decode()</code> returns
+marked encoding. Encoded values are never <code>NA</code>, though <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na()</a></code> reports 0
+as missing in a <a href="naxp_encoded.html">naxp_encoded</a> vector. <code>naxp_decode()</code> returns
 <code>NA</code> for 0, because no other string can stand for it: a naxp may accept the
 empty string.</p>
 <p>Encoded values are held as integers where the naxp's maximum encoded value
@@ -107,18 +108,18 @@ encoding it.</p></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">nl_postcode</span> <span class="op">&lt;-</span> <span class="fu"><a href="naxp_parse.html">naxp_parse</a></span><span class="op">(</span><span class="st">r"(\9\9\9\9 \s!! \A\A)"</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">postcode_naxp</span> <span class="op">&lt;-</span> <span class="fu"><a href="naxp_parse.html">naxp_parse</a></span><span class="op">(</span><span class="st">r"(\9\9\9\9 \s!! \A\A)"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">codes</span> <span class="op">&lt;-</span> <span class="fu">naxp_encode</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1012AB"</span>, <span class="st">"1012 AB"</span>, <span class="st">"not a postcode"</span><span class="op">)</span>, <span class="va">nl_postcode</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">codes</span></span></span>
+<span class="r-in"><span><span class="va">postcodes</span> <span class="op">&lt;-</span> <span class="fu">naxp_encode</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1012AB"</span>, <span class="st">"1012 AB"</span>, <span class="st">"not a postcode"</span><span class="op">)</span>, <span class="va">postcode_naxp</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">postcodes</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;naxp_encoded[3]&gt; \9\9\9\9 \s!! \A\A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1012 AB       1012 AB       &lt;invalid (0)&gt;</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">codes</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">postcodes</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 684114 684114      0</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">naxp_decode</span><span class="op">(</span><span class="va">codes</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">naxp_decode</span><span class="op">(</span><span class="va">postcodes</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1012 AB" "1012 AB" NA       </span>
-<span class="r-in"><span><span class="fu">naxp_decode</span><span class="op">(</span><span class="fl">684114L</span>, <span class="va">nl_postcode</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">naxp_decode</span><span class="op">(</span><span class="fl">684114L</span>, <span class="va">postcode_naxp</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1012 AB"</span>
 </code></pre></div>
     </div>

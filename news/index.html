@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">naxp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,9 +38,16 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/logmu-org/r-naxp/blob/v0.1.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/logmu-org/r-naxp/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="naxp-020">naxp 0.2.0<a class="anchor" aria-label="anchor" href="#naxp-020"></a></h2>
+<ul><li>
+<code><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na()</a></code> and <code><a href="https://rdrr.io/r/base/NA.html" class="external-link">anyNA()</a></code> report an encoded value of <code>0</code> as missing in a <code>naxp_encoded</code> vector. The stored value is still <code>0</code>, so <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric()</a></code>, <code><a href="https://rdrr.io/r/stats/complete.cases.html" class="external-link">complete.cases()</a></code> and functions built on vctrs, such as <code>tidyr::drop_na()</code>, still see <code>0</code>.</li>
+<li>Assigning <code>NA</code> into a <code>naxp_encoded</code> vector stores <code>0</code>, so <code>x[i] &lt;- NA</code> and <code>is.na(x) &lt;- i</code> work.</li>
+<li>Indexing a <code>naxp_encoded</code> vector out of range or with <code>NA</code> gives <code>0</code>, not <code>NA</code>.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="naxp-010">naxp 0.1.0<a class="anchor" aria-label="anchor" href="#naxp-010"></a></h2><p class="text-muted">CRAN release: 2026-11-03</p>
 <p>Initial CRAN release. It wraps the naxp C++ library 0.15.0.</p>
@@ -72,7 +79,8 @@
 <li>
 <code><a href="../reference/naxp_emit.html">naxp_emit()</a></code> generates source code for a naxp in any of the languages C, C++, C# or JavaScript.</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

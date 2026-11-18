@@ -45,10 +45,10 @@ size.
 ## Examples
 
 ``` r
-nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 
-naxp_accepts(c("1012AB", "1012 AB", "1012-AB"), nl_postcode)
+naxp_accepts(c("1012AB", "1012 AB", "1012-AB"), postcode_naxp)
 #> [1]  TRUE  TRUE FALSE
-naxp_canonical_form(c("1012AB", "1012 AB", "1012-AB"), nl_postcode)
+naxp_canonical_form(c("1012AB", "1012 AB", "1012-AB"), postcode_naxp)
 #> [1] "1012 AB" "1012 AB" NA       
 ```

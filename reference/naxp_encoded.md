@@ -33,8 +33,20 @@ A `naxp_encoded` vector the same length as `values`, with its names.
 
 The values are integers where the naxp's maximum encoded value is at
 most 2^31 - 1, and doubles where it is at most 2^53. Above 2^53 is an
-error. 0 stands for text that is not valid. Encoded values are never
+error. 0 stands for text that is not valid. The stored value is never
 `NA`.
+
+[`is.na()`](https://rdrr.io/r/base/NA.html) and
+[`anyNA()`](https://rdrr.io/r/base/NA.html) report an encoded value of 0
+as missing, so `is.na(x)` matches `is.na(naxp_decode(x))`. It is `TRUE`
+for text that was not valid as well as for text that was `NA`. Code that
+reads the stored values directly sees 0:
+[`as.numeric()`](https://rdrr.io/r/base/numeric.html) gives 0, and
+[`complete.cases()`](https://rdrr.io/r/stats/complete.cases.html) and
+functions built on vctrs, such as `tidyr::drop_na()` and
+`dplyr::coalesce()`, treat 0 as present.
+[`na.omit()`](https://rdrr.io/r/stats/na.fail.html) treats it as
+missing.
 
 A `naxp_encoded` vector prints as the text it decodes to, with 0 shown
 as `<invalid (0)>`.
@@ -55,9 +67,10 @@ vectors with the same naxp, and
 [`match()`](https://rdrr.io/r/base/match.html) return integer indices,
 and [`table()`](https://rdrr.io/r/base/table.html) counts each distinct
 value, labelled with its text, excluding 0. Assigning into a
-`naxp_encoded` vector accepts another with the same naxp, or text, which
-is encoded. [`c()`](https://rdrr.io/r/base/c.html) combines
-`naxp_encoded` vectors with the same naxp.
+`naxp_encoded` vector accepts another with the same naxp, text, which is
+encoded, or `NA`, which stores 0, so `is.na(x) <- i` works too.
+[`c()`](https://rdrr.io/r/base/c.html) combines `naxp_encoded` vectors
+with the same naxp.
 
 Encoded values are compared only for equality. `==` and `!=` compare a
 `naxp_encoded` vector with one with the same naxp, with text, which is
@@ -70,18 +83,18 @@ invalid text. Arithmetic, `<`, `>` and summaries such as
 ## Examples
 
 ``` r
-nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 
-codes <- naxp_encoded(c(684114, 0, 6760000), nl_postcode)
-codes
+postcodes <- naxp_encoded(c(684114, 0, 6760000), postcode_naxp)
+postcodes
 #> <naxp_encoded[3]> \9\9\9\9 \s!! \A\A
 #> [1] 1012 AB       <invalid (0)> 9999 ZZ      
-codes == "1012 AB"
+postcodes == "1012 AB"
 #> [1]  TRUE FALSE FALSE
-codes == 0
+postcodes == 0
 #> [1] FALSE  TRUE FALSE
 
-data.frame(postcode = codes)
+data.frame(postcode = postcodes)
 #>        postcode
 #> 1       1012 AB
 #> 2 <invalid (0)>

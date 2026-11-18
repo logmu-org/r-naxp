@@ -9,7 +9,7 @@ for the other functions in the package."><meta property="og:image" content="http
 
     <a class="navbar-brand me-2" href="../index.html">naxp</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,7 +40,7 @@ for the other functions in the package."><meta property="og:image" content="http
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Parse a naxp</h1>
-      <small class="dont-index">Source: <a href="https://github.com/logmu-org/r-naxp/blob/v0.1.0/R/naxp.R" class="external-link"><code>R/naxp.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/logmu-org/r-naxp/blob/main/R/naxp.R" class="external-link"><code>R/naxp.R</code></a></small>
       <div class="d-none name"><code>naxp_parse.Rd</code></div>
     </div>
 
@@ -96,8 +96,8 @@ properties.</p></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">nl_postcode</span> <span class="op">&lt;-</span> <span class="fu">naxp_parse</span><span class="op">(</span><span class="st">r"(\9\9\9\9 \s!! \A\A)"</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">nl_postcode</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">postcode_naxp</span> <span class="op">&lt;-</span> <span class="fu">naxp_parse</span><span class="op">(</span><span class="st">r"(\9\9\9\9 \s!! \A\A)"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">postcode_naxp</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;naxp&gt; \9\9\9\9 \s!! \A\A</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Maximum encoded value: 6760000</span>
 <span class="r-in"><span></span></span>

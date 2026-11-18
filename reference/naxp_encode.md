@@ -53,9 +53,11 @@ canonical form.
 
 Text the naxp does not accept is invalid and encodes to 0, as in every
 naxp library. So does `NA`, and so does any text that is not ASCII,
-whatever its marked encoding. Encoded values are never `NA`.
-`naxp_decode()` returns `NA` for 0, because no other string can stand
-for it: a naxp may accept the empty string.
+whatever its marked encoding. Encoded values are never `NA`, though
+[`is.na()`](https://rdrr.io/r/base/NA.html) reports 0 as missing in a
+[naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
+vector. `naxp_decode()` returns `NA` for 0, because no other string can
+stand for it: a naxp may accept the empty string.
 
 Encoded values are held as integers where the naxp's maximum encoded
 value is at most 2^31 - 1, and as doubles where it is at most 2^53.
@@ -72,17 +74,17 @@ to check text without encoding it.
 ## Examples
 
 ``` r
-nl_postcode <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
+postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 
-codes <- naxp_encode(c("1012AB", "1012 AB", "not a postcode"), nl_postcode)
-codes
+postcodes <- naxp_encode(c("1012AB", "1012 AB", "not a postcode"), postcode_naxp)
+postcodes
 #> <naxp_encoded[3]> \9\9\9\9 \s!! \A\A
 #> [1] 1012 AB       1012 AB       <invalid (0)>
-as.integer(codes)
+as.integer(postcodes)
 #> [1] 684114 684114      0
 
-naxp_decode(codes)
+naxp_decode(postcodes)
 #> [1] "1012 AB" "1012 AB" NA       
-naxp_decode(684114L, nl_postcode)
+naxp_decode(684114L, postcode_naxp)
 #> [1] "1012 AB"
 ```
