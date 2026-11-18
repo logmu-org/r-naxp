@@ -1,7 +1,7 @@
 # Parse a naxp
 
-Parses the pattern of a naxp, checking that it is valid, and returns a
-naxp for the other functions in the package.
+Parses the naxp pattern, checks it is valid, and returns the naxp
+instance.
 
 ## Usage
 
@@ -17,19 +17,23 @@ naxp_parse(pattern)
 
 ## Value
 
-A naxp: an object of class `naxp` holding the pattern.
+A naxp: an object of class `naxp` that stores the pattern.
 
 ## Details
 
-A naxp holds only its pattern. The compiled naxp is kept for the rest of
-the session, so parsing the same pattern again is cheap, and a naxp
-saved with [`saveRDS()`](https://rdrr.io/r/base/readRDS.html) or sent to
-a parallel worker is compiled again when first used.
+A `naxp` stores only its pattern, but the compiled naxp is stored for
+the remainder of the session, which means that re-parsing the same
+pattern is cheap. (A naxp saved with
+[`saveRDS()`](https://rdrr.io/r/base/readRDS.html) or sent to a parallel
+worker is re-compiled when first used.)
 
-Every function that takes a naxp also accepts a pattern string, which it
-parses in the same way, or a
-[naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
-vector, whose naxp it uses.
+Every function that takes a `naxp` also accepts:
+
+- a naxp pattern string, which it parses in the same way, or
+
+- a
+  [naxp_encoded](https://r-naxp.logmu.org/reference/encoded-vectors.md)
+  vector, whose `naxp` it uses.
 
 ## Errors
 
@@ -48,7 +52,7 @@ also an `error`. Its fields are named as in the other naxp libraries:
 
 - `pattern`: the pattern.
 
-Each error code is explained at <https://naxp.org/error-codes/>.
+All possible error codes are defined at <https://naxp.org/error-codes/>.
 
 ## See also
 

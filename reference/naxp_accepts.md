@@ -1,7 +1,8 @@
 # Check text against a naxp
 
-`naxp_accepts()` says whether a naxp accepts each text, and
-`naxp_canonical_form()` gives the form each accepted text decodes to.
+`naxp_accepts()` tests whether a naxp accepts each text, and
+`naxp_canonical_form()` returns the canonical form that each accepted
+text decodes to.
 
 ## Usage
 
@@ -22,25 +23,30 @@ naxp_canonical_form(text, naxp)
   A naxp from
   [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), a
   pattern string or a
-  [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
+  [naxp_encoded](https://r-naxp.logmu.org/reference/encoded-vectors.md)
   vector, whose naxp is used. For
   [`naxp_decode()`](https://r-naxp.logmu.org/reference/naxp_encode.md),
-  it is needed only where `x` is not a
-  [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
+  it is needed only if `x` is not a
+  [naxp_encoded](https://r-naxp.logmu.org/reference/encoded-vectors.md)
   vector.
 
 ## Value
 
-- `naxp_accepts()`: a logical vector the same length as `text`, with its
-  names. It is `FALSE`, never `NA`, for `NA` and for invalid text.
+- `naxp_accepts()`: a logical vector the same length as `text`. It is
+  `FALSE`, never `NA`, for `NA` and for invalid text. If the elements of
+  `text` are named then the same names are applied to the elements of
+  the returned vector.
 
-- `naxp_canonical_form()`: a character vector the same length as `text`,
-  with its names, holding `NA` for `NA` and for invalid text.
+- `naxp_canonical_form()`: a character vector the same length as `text`.
+  Where `text` is `NA` or invalid, the canonical form is `NA`. If the
+  elements of `text` are named then the same names are applied to the
+  elements of the returned vector.
 
 ## Details
 
-Neither needs the text's encoded value, so both work for a naxp of any
-size.
+Neither function needs the text's encoded value, so both work for a naxp
+of any size, including one whose maximum encoded value is over
+\\2^{53}\\.
 
 ## Examples
 

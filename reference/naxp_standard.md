@@ -1,7 +1,7 @@
 # Standard naxps
 
-`naxp_standard()` gives one of the standard naxps built into every naxp
-library, and `naxp_standards()` lists them all.
+`naxp_standard()` returns one of the standard naxps that are built into
+every naxp library, and `naxp_standards()` lists them all.
 
 ## Usage
 
@@ -34,10 +34,16 @@ naxp_standards()
 ## Details
 
 The standard naxps are for widely used code systems such as postcodes.
-Each has an id, such as `"uk-postcode"`, and one or more variants, one
-of which is `"default"`. The id and the variant are matched without
-regard to ASCII case. Once published, a standard naxp never changes, so
-values encoded with it keep their meaning.
+Each standard has
+
+- an id, such as `"uk-postcode"`, and
+
+- one or more variants, one of which is `"default"`.
+
+Ids and variants are matched without regard to ASCII case.
+
+Once published, a standard naxp *never* changes, which means that values
+encoded with it keep their meaning.
 
 The standard naxps are described at <https://naxp.org/standard/>.
 

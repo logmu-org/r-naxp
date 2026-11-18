@@ -146,8 +146,8 @@ and `"1012 AB"` both match `"1012 AB"`.
 
 [`sort()`](https://rdrr.io/r/base/sort.html) sorts by encoded value.
 
-To turn bare encoded values, e.g. values read back from a database or a
-file, back into a `naxp_encoded` vector, use
+To turn underlying encoded values, e.g. values read back from a database
+or a file, back into a `naxp_encoded` vector, use
 [`naxp_encoded()`](https://r-naxp.logmu.org/reference/naxp_encoded.md):
 
 ``` r

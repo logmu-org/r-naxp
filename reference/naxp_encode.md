@@ -1,7 +1,7 @@
 # Encode and decode text
 
-`naxp_encode()` encodes text as encoded values under a naxp, and
-`naxp_decode()` decodes them back to the canonical form of the text.
+`naxp_encode()` encodes text using a naxp, and `naxp_decode()` decodes
+the encoded values back to the canonical form of the text.
 
 ## Usage
 
@@ -22,47 +22,69 @@ naxp_decode(x, naxp = NULL)
   A naxp from
   [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), a
   pattern string or a
-  [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
-  vector, whose naxp is used. For `naxp_decode()`, it is needed only
-  where `x` is not a
-  [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
+  [naxp_encoded](https://r-naxp.logmu.org/reference/encoded-vectors.md)
+  vector, whose naxp is used. For `naxp_decode()`, it is needed only if
+  `x` is not a
+  [naxp_encoded](https://r-naxp.logmu.org/reference/encoded-vectors.md)
   vector.
 
 - x:
 
-  A [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
-  vector, or an integer or double vector of encoded values. Bare values
-  must be whole numbers from 0 to the naxp's maximum encoded value, or
-  `NA`.
+  A
+  [naxp_encoded](https://r-naxp.logmu.org/reference/encoded-vectors.md)
+  vector, or an `integer` or `double` vector of underlying encoded
+  values. Underlying encoded values must be non-negative integers up to
+  the naxp's maximum encoded value, or `NA`.
 
 ## Value
 
 - `naxp_encode()`: a
-  [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
-  vector the same length as `text`, with its names.
+  [naxp_encoded](https://r-naxp.logmu.org/reference/encoded-vectors.md)
+  vector the same length as `text`. If the elements of `text` are named
+  then the same names are applied to the elements of the returned
+  vector.
 
-- `naxp_decode()`: a character vector the same length as `x`, with its
-  names, holding `NA` where a value is 0 or `NA`.
+- `naxp_decode()`: a character vector of the decoded text, the same
+  length as `x`. Where a value is 0 or `NA`, the text is `NA`. If the
+  elements of `x` are named then the same names are applied to the
+  elements of the returned vector.
 
 ## Details
 
-Each text a naxp accepts encodes to a whole number from 1 to its maximum
-encoded value. Several texts may share a value, such as a postcode
-written with and without a space, and each value decodes to one
-canonical form.
+Each text that a naxp accepts is encoded as an integer from 1 to the
+naxp's maximum encoded value. Several texts may share an encoded value
+(for instance, a postcode written with and without a space), but each
+encoded value decodes to exactly one canonical form.
 
-Text the naxp does not accept is invalid and encodes to 0, as in every
-naxp library. So does `NA`, and so does any text that is not ASCII,
-whatever its marked encoding. Encoded values are never `NA`, though
+## Invalid text
+
+Text that the naxp does not accept is invalid and is encoded as 0, as in
+every naxp library. The same applies to
+
+- `NA`, and
+
+- any text that is not ASCII, whatever its marked encoding.
+
+Encoded values are *never* `NA`, although
 [`is.na()`](https://rdrr.io/r/base/NA.html) reports 0 as missing in a
-[naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
-vector. `naxp_decode()` returns `NA` for 0, because no other string can
-stand for it: a naxp may accept the empty string.
+[naxp_encoded](https://r-naxp.logmu.org/reference/encoded-vectors.md)
+vector.
 
-Encoded values are held as integers where the naxp's maximum encoded
-value is at most 2^31 - 1, and as doubles where it is at most 2^53.
-Above 2^53, which is the largest whole number R holds exactly, both
-functions raise an error.
+`naxp_decode()` returns `NA` for 0. No string can represent 0, because a
+naxp may accept the empty string.
+
+## Storage
+
+Encoded values are stored as
+
+- `integer` if the naxp's maximum encoded value is less than \\2^{31}\\,
+  or
+
+- `double` if it is in the range \\2^{31}\\ to \\2^{53}\\.
+
+If the maximum encoded value is over \\2^{53}\\, both functions raise an
+error, because a `double` cannot store every integer over \\2^{53}\\
+exactly.
 
 ## See also
 
@@ -70,6 +92,13 @@ functions raise an error.
 and
 [`naxp_canonical_form()`](https://r-naxp.logmu.org/reference/naxp_accepts.md)
 to check text without encoding it.
+
+Use
+[`naxp_encoded()`](https://r-naxp.logmu.org/reference/naxp_encoded.md)
+to construct a
+[naxp_encoded](https://r-naxp.logmu.org/reference/encoded-vectors.md)
+vector from its underlying values (e.g. when reading encoded values from
+a file or database).
 
 ## Examples
 

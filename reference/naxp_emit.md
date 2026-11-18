@@ -1,9 +1,8 @@
 # Emit a naxp as source code
 
-Writes a naxp as source code in another language: a fragment of
-declarations that answer the same questions this package does, for that
-one naxp, with no dependency on any naxp library. The header comment,
-includes, namespace or wrapping class around it are yours to add.
+Writes a naxp as source code in another language. The result is a
+fragment of declarations that answers the same questions as this package
+does, for that one naxp, with no dependency on any naxp library.
 
 ## Usage
 
@@ -27,7 +26,7 @@ naxp_emit(
   A naxp from
   [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), a
   pattern string or a
-  [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
+  [naxp_encoded](https://r-naxp.logmu.org/reference/encoded-vectors.md)
   vector, whose naxp is used.
 
 - language:
@@ -43,8 +42,8 @@ naxp_emit(
 
 - value_type:
 
-  The integer type the generated code uses for encoded values. The
-  naxp's maximum encoded value must fit it.
+  The integer type that the generated code uses for encoded values. The
+  naxp's maximum encoded value must fit in it.
 
 - initial_indent:
 
@@ -62,6 +61,11 @@ naxp_emit(
 ## Value
 
 A single string: the fragment.
+
+## Details
+
+You need to add any header comment, includes, namespace or wrapping
+class around it.
 
 ## Examples
 

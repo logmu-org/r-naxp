@@ -1,10 +1,17 @@
-# Encoded values
+# Recreate encoded vectors from underlying values
 
-A `naxp_encoded` vector holds encoded values together with the naxp that
-encoded them, so it can always be decoded.
-[`naxp_encode()`](https://r-naxp.logmu.org/reference/naxp_encode.md)
-returns one, and `naxp_encoded()` makes one from bare values, such as
-values read from a database or a file.
+`naxp_encoded()` constructs a
+[naxp_encoded](https://r-naxp.logmu.org/reference/encoded-vectors.md)
+vector from its underlying encoded values.
+
+*This is a specialised operation – normal practice is to use
+[`naxp_encode()`](https://r-naxp.logmu.org/reference/naxp_encode.md) to
+construct a `naxp_encoded` vector **from text**.*
+
+`naxp_encoded()` is exported so that encoded values previously extracted
+using [`as.integer()`](https://rdrr.io/r/base/integer.html) or
+[`as.numeric()`](https://rdrr.io/r/base/numeric.html) and saved in a
+database or a file can be restored.
 
 ## Usage
 
@@ -16,87 +23,58 @@ naxp_encoded(values, naxp)
 
 - values:
 
-  An integer or double vector of whole numbers from 0 to the naxp's
-  maximum encoded value. `NA` is an error.
+  An `integer` or `double` vector of non-negative integers up to the
+  naxp's maximum encoded value. `NA` is an error.
 
 - naxp:
 
   A naxp from
   [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), a
-  pattern string or a naxp_encoded vector, whose naxp is used.
+  pattern string or a
+  [naxp_encoded](https://r-naxp.logmu.org/reference/encoded-vectors.md)
+  vector, whose naxp is used.
 
 ## Value
 
-A `naxp_encoded` vector the same length as `values`, with its names.
+A `naxp_encoded` vector the same length as `values`. If the elements of
+`values` are named then the same names are applied to the elements of
+the returned vector.
 
 ## Details
 
-The values are integers where the naxp's maximum encoded value is at
-most 2^31 - 1, and doubles where it is at most 2^53. Above 2^53 is an
-error. 0 stands for text that is not valid. The stored value is never
-`NA`.
+`values` must be non-negative integers up to the naxp's maximum encoded
+value, stored as either `integer` or `double`. `NA` is an error, because
+an encoded value is *never* `NA`: 0 means invalid text.
 
-[`is.na()`](https://rdrr.io/r/base/NA.html) and
-[`anyNA()`](https://rdrr.io/r/base/NA.html) report an encoded value of 0
-as missing, so `is.na(x)` matches `is.na(naxp_decode(x))`. It is `TRUE`
-for text that was not valid as well as for text that was `NA`. Code that
-reads the stored values directly sees 0:
-[`as.numeric()`](https://rdrr.io/r/base/numeric.html) gives 0, and
-[`complete.cases()`](https://rdrr.io/r/stats/complete.cases.html) and
-functions built on vctrs, such as `tidyr::drop_na()` and
-`dplyr::coalesce()`, treat 0 as present.
-[`na.omit()`](https://rdrr.io/r/stats/na.fail.html) treats it as
-missing.
+It is `naxp`, not the type of `values`, that decides how the values are
+stored:
 
-A `naxp_encoded` vector prints as the text it decodes to, with 0 shown
-as `<invalid (0)>`.
-[`as.character()`](https://rdrr.io/r/base/character.html) gives the
-text, with `NA` for 0, and
-[`as.integer()`](https://rdrr.io/r/base/integer.html) or
-[`as.numeric()`](https://rdrr.io/r/base/numeric.html) give the bare
-values.
+- `integer` if the naxp's maximum encoded value is less than \\2^{31}\\,
+  or
 
-Subsetting, [`rep()`](https://rdrr.io/r/base/rep.html),
-[`rev()`](https://rdrr.io/r/base/rev.html),
-[`unique()`](https://rdrr.io/r/base/unique.html) and
-[`sort()`](https://rdrr.io/r/base/sort.html) return `naxp_encoded`
-vectors with the same naxp, and
-[`split()`](https://rdrr.io/r/base/split.html) returns a list of them. A
-`naxp_encoded` vector can be a data frame column.
-[`order()`](https://rdrr.io/r/base/order.html) and
-[`match()`](https://rdrr.io/r/base/match.html) return integer indices,
-and [`table()`](https://rdrr.io/r/base/table.html) counts each distinct
-value, labelled with its text, excluding 0. Assigning into a
-`naxp_encoded` vector accepts another with the same naxp, text, which is
-encoded, or `NA`, which stores 0, so `is.na(x) <- i` works too.
-[`c()`](https://rdrr.io/r/base/c.html) combines `naxp_encoded` vectors
-with the same naxp.
+- `double` if it is in the range \\2^{31}\\ to \\2^{53}\\.
 
-Encoded values are compared only for equality. `==` and `!=` compare a
-`naxp_encoded` vector with one with the same naxp, with text, which is
-encoded first, or with numbers as bare values, so `x == 0` finds the
-invalid text. Arithmetic, `<`, `>` and summaries such as
-[`max()`](https://rdrr.io/r/base/Extremes.html) raise errors.
-[`sort()`](https://rdrr.io/r/base/sort.html) and
-[`order()`](https://rdrr.io/r/base/order.html) sort by encoded value.
+If `naxp` has a maximum encoded value over \\2^{53}\\ then an error is
+raised.
+
+## See also
+
+[`naxp_encode()`](https://r-naxp.logmu.org/reference/naxp_encode.md) to
+create a `naxp_encoded` vector from text and a naxp.
+
+[naxp_encoded](https://r-naxp.logmu.org/reference/encoded-vectors.md)
+for working with a `naxp_encoded` vector.
 
 ## Examples
 
 ``` r
 postcode_naxp <- naxp_parse(r"(\9\9\9\9 \s!! \A\A)")
 
-postcodes <- naxp_encoded(c(684114, 0, 6760000), postcode_naxp)
+# Values saved earlier, such as a column read from a database
+postcode_values <- c(684114L, 0L, 6760000L)
+
+postcodes <- naxp_encoded(postcode_values, postcode_naxp)
 postcodes
 #> <naxp_encoded[3]> \9\9\9\9 \s!! \A\A
 #> [1] 1012 AB       <invalid (0)> 9999 ZZ      
-postcodes == "1012 AB"
-#> [1]  TRUE FALSE FALSE
-postcodes == 0
-#> [1] FALSE  TRUE FALSE
-
-data.frame(postcode = postcodes)
-#>        postcode
-#> 1       1012 AB
-#> 2 <invalid (0)>
-#> 3       9999 ZZ
 ```

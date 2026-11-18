@@ -116,10 +116,12 @@ naxp_decode(postcodes)
   [`naxp_canonical_form()`](https://r-naxp.logmu.org/reference/naxp_accepts.md)
   : Check text against a naxp
 
-## Encoded vectors
+## Working with encoded vectors
 
+- [`encoded-vectors`](https://r-naxp.logmu.org/reference/encoded-vectors.md)
+  : Encoded vectors
 - [`naxp_encoded()`](https://r-naxp.logmu.org/reference/naxp_encoded.md)
-  : Encoded values
+  : Recreate encoded vectors from underlying values
 
 ## Compare and emit naxps
 

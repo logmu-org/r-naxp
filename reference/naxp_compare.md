@@ -1,9 +1,7 @@
 # Compare two naxps
 
-`naxp_compare()` says how `b` stands to `a`: what happens to text and
-encoded values held under `a` if `b` replaces it.
-`naxp_first_divergent_value()` finds the lowest encoded value the two
-decode differently.
+`naxp_compare()` describes how naxp `b` relates to naxp `a`, i.e. what
+happens to text and encoded values stored under `a` if `b` replaces it.
 
 ## Usage
 
@@ -17,10 +15,10 @@ naxp_first_divergent_value(a, b)
 
 - a:
 
-  The naxp the data was encoded with: a naxp from
+  The naxp that the data was encoded with: a naxp from
   [`naxp_parse()`](https://r-naxp.logmu.org/reference/naxp_parse.md), a
   pattern string or a
-  [naxp_encoded](https://r-naxp.logmu.org/reference/naxp_encoded.md)
+  [naxp_encoded](https://r-naxp.logmu.org/reference/encoded-vectors.md)
   vector, whose naxp is used.
 
 - b:
@@ -30,39 +28,45 @@ naxp_first_divergent_value(a, b)
 - budget:
 
   `NULL` for the library's default budget of 200 000 product states, or
-  a positive whole number.
+  a positive integer.
 
 ## Value
 
 - `naxp_compare()`: a named character vector with elements
   `accepted_text`, `encoding` and `canonical_forms`.
 
-- `naxp_first_divergent_value()`: a single encoded value, or 0 where
-  every value both naxps hold decodes alike. Values only one naxp holds
-  do not count. It is an integer where both naxps' encoded values are
-  integers, and otherwise a double.
+- `naxp_first_divergent_value()`: a single encoded value, or 0 if every
+  encoded value that both naxps define decodes to the same text. Encoded
+  values that only one naxp defines do not count. It is an `integer` if
+  both naxps store their encoded values as `integer`, and otherwise a
+  `double`.
 
 ## Details
 
-`naxp_compare()` gives three set relationships, each from `a`'s point of
-view:
+`naxp_first_divergent_value()` finds the lowest encoded value that the
+two naxps decode differently.
 
-- `accepted_text`: how the strings `a` accepts stand to those `b`
-  accepts.
+`naxp_compare()` returns three set relationships, each from `a`'s point
+of view:
 
-- `encoding`: how the (text, encoded value) pairs `a` defines stand to
-  those `b` defines. Replacing `a` with `b` is safe for stored values
-  exactly when this is `"equal"` or `"subset_of"`.
+- `accepted_text`: how the texts that `a` accepts relate to those that
+  `b` accepts.
 
-- `canonical_forms`: how the canonical forms `a` prints stand to those
-  `b` prints.
+- `encoding`: how the (text, encoded value) pairs that `a` defines
+  relate to those that `b` defines. Replacing `a` with `b` is safe for
+  stored values if and only if this is `"equal"` or `"subset_of"`.
 
-Each is `"equal"`, `"subset_of"`, `"superset_of"` or `"incomparable"`.
+- `canonical_forms`: how the canonical forms that `a` prints relate to
+  those that `b` prints.
 
-The encoding relationship is decided by walking the two naxps together,
-which has a budget. No naxp anybody has reason to write comes near the
-default, but a pair that does cannot be decided, and `naxp_compare()`
-then raises an error rather than guess.
+Each relationship is one of `"equal"`, `"subset_of"`, `"superset_of"` or
+`"incomparable"`.
+
+The `encoding` relationship is decided by walking the two naxps
+together, which has a budget. No naxp that anybody has reason to write
+comes near the default budget. If a pair of naxps does exceed it, the
+relationship cannot be decided, and `naxp_compare()` raises an error
+rather than guess.
 
 ## Examples
 
